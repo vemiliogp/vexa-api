@@ -10,7 +10,7 @@ router = APIRouter()
 health_controller = HealthController(health_service=HealthService())
 
 
-@router.get("/v1/health", tags=["Health"])
+@router.get("/health", tags=["Health"])
 async def health_check():
     """
     Health check endpoint.
