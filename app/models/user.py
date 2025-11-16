@@ -11,3 +11,6 @@ class User(Model):
     email = fields.CharField(max_length=50, unique=True)
     password_hash = fields.CharField(max_length=128)
     full_name = fields.CharField(max_length=100, null=True)
+
+    created_at = fields.DatetimeField(auto_now_add=True)
+    updated_at = fields.DatetimeField(auto_now=True)

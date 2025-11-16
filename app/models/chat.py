@@ -1,0 +1,20 @@
+"""Chat model definition."""
+
+from tortoise import fields
+from tortoise.models import Model
+
+from app.models.user import User
+
+
+class Chat(Model):
+    """Chat model representing a chat in the system."""
+
+    id = fields.IntField(pk=True)
+    name = fields.CharField(max_length=50, unique=True)
+
+    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
+        "models.User", related_name="chats", on_delete=fields.CASCADE
+    )
+
+    created_at = fields.DatetimeField(auto_now_add=True)
+    updated_at = fields.DatetimeField(auto_now=True)
