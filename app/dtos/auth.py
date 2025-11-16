@@ -13,6 +13,13 @@ class UserProfile(BaseModel):
     full_name: str
 
 
+class LoginRequest(BaseModel):
+    """Payload expected by the login endpoint."""
+
+    email: EmailStr
+    password: str
+
+
 class RegisterRequest(BaseModel):
     """Payload expected by the registration endpoint."""
 

@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from bcrypt import gensalt, hashpw
+from bcrypt import checkpw, gensalt, hashpw
 
 
 @dataclass
@@ -17,3 +17,10 @@ class Password:
         salt = gensalt()
         hashed = hashpw(value.encode("utf-8"), salt)
         return hashed.decode("utf-8")
+
+    @staticmethod
+    def compare(supplied_password: str, stored_password: str) -> bool:
+        """
+        Compare a stored hashed password with a supplied password.
+        """
+        return checkpw(supplied_password.encode(), stored_password.encode())
