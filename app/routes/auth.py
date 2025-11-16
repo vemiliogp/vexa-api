@@ -11,9 +11,9 @@ auth_controller = AuthController(AuthService())
 
 
 @router.post("/register", response_model=RegisterResponse, status_code=201)
-def register(payload: RegisterRequest):
+async def register(payload: RegisterRequest):
     """
     Register an user endpoint.
     """
-    user = auth_controller.register(payload)
-    return RegisterResponse.model_validate(user)
+    user = await auth_controller.register(payload)
+    return user

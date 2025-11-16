@@ -12,8 +12,8 @@ class AuthController:
 
     auth_service: AuthService
 
-    def register(self, payload: RegisterRequest) -> RegisterResponse:
+    async def register(self, payload: RegisterRequest) -> RegisterResponse:
         """
         Register a new user.
         """
-        return self.auth_service.register_user(payload)
+        return await self.auth_service.register_user(payload)
