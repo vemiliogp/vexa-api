@@ -20,6 +20,10 @@ class LoginRequest(BaseModel):
     password: str
 
 
+class LoginResponse(UserProfile):
+    """Payload returned by the login endpoint."""
+
+
 class RegisterRequest(BaseModel):
     """Payload expected by the registration endpoint."""
 

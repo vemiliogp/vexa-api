@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from app.dtos.auth import LoginRequest, RegisterRequest, RegisterResponse
+from app.dtos.auth import LoginRequest, RegisterRequest, RegisterResponse, LoginResponse
 from app.models.user import User
 from app.utils.password import Password
 
@@ -11,15 +11,18 @@ from app.utils.password import Password
 class AuthService:
     """Service to handle authentication."""
 
-    async def authenticate_user(self, payload: LoginRequest) -> str:
+    async def authenticate_user(self, payload: LoginRequest) -> LoginResponse:
         """
         Authenticate a user and return an authentication session.
         """
-        user = await User.get_or_none(email=payload.email)
-        if not user or not Password.compare(payload.password, user.password_hash):
-            raise ValueError("Invalid email or password")
+        try:
+            user = await User.get_or_none(email=payload.email)
+            if not user or not Password.compare(payload.password, user.password_hash):
+                raise ValueError("Invalid email or password")
 
-        return "session"
+            return LoginResponse(id=user.id, email=user.email, full_name=user.full_name)
+        except Exception as e:
+            raise e
 
     async def register_user(self, payload: RegisterRequest) -> RegisterResponse:
         """

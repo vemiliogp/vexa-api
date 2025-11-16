@@ -9,6 +9,7 @@ dependencies = [
     "black>=25.11.0",
     "fastapi[standard]>=0.121.2",
     "isort>=7.0.0",
+    "itsdangerous>=2.2.0",
     "python-dotenv>=1.2.1",
     "tortoise-orm[accel,asyncpg]>=0.25.1",
 ]

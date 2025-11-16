@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from app.dtos.auth import LoginRequest, RegisterRequest, RegisterResponse
+from app.dtos.auth import LoginRequest, LoginResponse, RegisterRequest, RegisterResponse
 from app.services.auth import AuthService
 
 
@@ -12,7 +12,7 @@ class AuthController:
 
     auth_service: AuthService
 
-    async def login(self, payload: LoginRequest) -> str:
+    async def login(self, payload: LoginRequest) -> LoginResponse:
         """
         Login a user and return an authentication session.
         """

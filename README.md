@@ -14,7 +14,7 @@ Backend service built with **Python 3.12**, **FastAPI**, and **Tortoise ORM**. T
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/vemiliog/vexa-api.git
+   git clone https://github.com/vemiliogp/vexa-api.git
    cd vexa-api
    ```
 
@@ -40,16 +40,17 @@ Backend service built with **Python 3.12**, **FastAPI**, and **Tortoise ORM**. T
 
    ```bash
    cat <<'EOF' > .env
-   DATABASE_URL=postgres://postgres:postgres@localhost:5432/vexa
+   DB_URL=postgres://postgres:postgres@localhost:5432/vexa
    DB_USER=postgres
    DB_PASSWORD=postgres
    DB_NAME=vexa
+   SESSION_SECRET=dev-secret
    EOF
    ```
 
 4. **Generate strong secrets**
 
-   Update `DB_PASSWORD` (and any other sensitive value) with random data:
+   Update `DB_PASSWORD`, `SESSION_SECRET` (and any other sensitive value) with random data:
 
    ```bash
    openssl rand -base64 32

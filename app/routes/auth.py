@@ -1,9 +1,9 @@
 """Authentication routes module."""
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 
 from app.controllers.auth import AuthController
-from app.dtos.auth import RegisterRequest, RegisterResponse, LoginRequest
+from app.dtos.auth import LoginRequest, RegisterRequest, RegisterResponse, LoginResponse
 from app.services.auth import AuthService
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -19,10 +19,11 @@ async def register(payload: RegisterRequest):
     return user
 
 
-@router.post("/login", response_model=str)
-async def login(payload: LoginRequest):
+@router.post("/login", response_model=LoginResponse)
+async def login(payload: LoginRequest, request: Request):
     """
     Login an user endpoint.
     """
-    session = await auth_controller.login(payload)
-    return session
+    user = await auth_controller.login(payload)
+    request.session["user"] = user.model_dump()
+    return user
