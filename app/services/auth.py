@@ -23,6 +23,7 @@ class AuthService:
             )
 
             return RegisterResponse(
+                id=user.id,
                 email=user.email,
                 full_name=user.full_name,
             )
