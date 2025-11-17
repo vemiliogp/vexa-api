@@ -7,12 +7,12 @@ from app.models.user import User
 
 
 class Conversation(Model):
-    """Conversation model representing a chat in the system."""
+    """Conversation model representing a conversation in the system."""
 
     id = fields.IntField(pk=True)
-    name = fields.CharField(max_length=50, unique=True)
+    title = fields.CharField(max_length=50, unique=True)
 
-    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
+    user_id: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
         "models.User", related_name="conversations", on_delete=fields.CASCADE
     )
 
