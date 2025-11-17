@@ -11,8 +11,9 @@ class Conversation(Model):
 
     id = fields.IntField(pk=True)
     title = fields.CharField(max_length=50, unique=True)
+    context = fields.TextField(null=True)
 
-    user_id: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
+    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
         "models.User", related_name="conversations", on_delete=fields.CASCADE
     )
 

@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from app.dtos.auth import LoginRequest, RegisterRequest, RegisterResponse, LoginResponse
+from app.dtos.auth import LoginRequest, LoginResponse, RegisterRequest, RegisterResponse
 from app.models.user import User
 from app.utils.password import Password
 

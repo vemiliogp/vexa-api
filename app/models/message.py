@@ -12,7 +12,7 @@ class Message(Model):
     id = fields.IntField(pk=True)
     content = fields.JSONField()
 
-    conversation_id: fields.ForeignKeyRelation[Conversation] = fields.ForeignKeyField(
+    conversation: fields.ForeignKeyRelation[Conversation] = fields.ForeignKeyField(
         "models.Conversation", related_name="messages", on_delete=fields.CASCADE
     )
 

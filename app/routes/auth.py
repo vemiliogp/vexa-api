@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Request
 
 from app.controllers.auth import AuthController
-from app.dtos.auth import LoginRequest, RegisterRequest, RegisterResponse, LoginResponse
+from app.dtos.auth import LoginRequest, LoginResponse, RegisterRequest, RegisterResponse
 from app.services.auth import AuthService
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
