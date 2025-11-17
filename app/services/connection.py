@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from app.dtos.connection import CreateConnectionRequest, CreateConnectionResponse
 from app.models.connection import Connection
+from app.utils.encrypt import Encrypt
 
 
 @dataclass
@@ -17,11 +18,14 @@ class ConnectionService:
         Register a new connection by user.
         """
         try:
+            encrypted_url = Encrypt.encrypt(payload.url)
+
             connection = await Connection.create(
                 name=payload.name,
                 description=payload.description,
                 engine=payload.engine,
-                url=payload.url,
+                encrypted_url=encrypted_url,
+                user_id=1,
             )
 
             return CreateConnectionResponse(
@@ -29,7 +33,7 @@ class ConnectionService:
                 name=connection.name,
                 description=connection.description,
                 engine=connection.engine,
-                url=connection.url,
+                url=connection.encrypted_url,
             )
         except Exception as e:
             raise e

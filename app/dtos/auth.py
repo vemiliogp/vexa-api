@@ -36,3 +36,9 @@ class RegisterResponse(UserProfile):
     """Payload returned by the registration endpoint."""
 
     message: str = "User registered successfully"
+
+
+class LogoutResponse(BaseModel):
+    """Payload returned by the logout endpoint."""
+
+    message: str = "User logged out successfully"

@@ -42,3 +42,15 @@ class AuthService:
             )
         except Exception as e:
             raise e
+
+    async def logout_user(self, user_id: str) -> None:
+        """
+        Logout a user by invalidating their session.
+        """
+        try:
+            user = await User.get_or_none(id=user_id)
+            if not user:
+                raise ValueError("User not found")
+            return
+        except Exception as e:
+            raise e

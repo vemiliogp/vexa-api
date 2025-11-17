@@ -2,7 +2,13 @@
 
 from dataclasses import dataclass
 
-from app.dtos.auth import LoginRequest, LoginResponse, RegisterRequest, RegisterResponse
+from app.dtos.auth import (
+    LoginRequest,
+    LoginResponse,
+    LogoutResponse,
+    RegisterRequest,
+    RegisterResponse,
+)
 from app.services.auth import AuthService
 
 
@@ -23,3 +29,9 @@ class AuthController:
         Register a new user.
         """
         return await self.auth_service.register_user(payload)
+
+    async def logout(self, user_id: str) -> LogoutResponse:
+        """
+        Logout a user by invalidating their session.
+        """
+        return await self.auth_service.logout_user(user_id)
