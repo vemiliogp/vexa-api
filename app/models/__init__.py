@@ -1,6 +1,6 @@
 """Models registration."""
 
 from app.models.user import User
-from app.models.chat import Chat
+from app.models.conversation import Conversation
 
-__all__ = ["User", "Chat"]
+__all__ = ["User", "Conversation"]
