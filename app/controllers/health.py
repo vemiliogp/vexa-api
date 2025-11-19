@@ -14,6 +14,6 @@ class HealthController:
 
     def get_health(self) -> HealthResponse:
         """
-        Get the health status by delegating to the HealthService.
+        Get the API health status.
         """
         return self.health_service.check_health()

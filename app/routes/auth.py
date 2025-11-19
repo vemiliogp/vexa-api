@@ -31,7 +31,7 @@ async def login(payload: LoginRequest, request: Request):
     Login an user endpoint.
     """
     user = await auth_controller.login(payload)
-    request.session["user"] = user.model_dump()
+    request.session["user"] = user.data.model_dump()
     return user
 
 
@@ -43,6 +43,7 @@ async def logout(request: Request):
     user_data = request.session.get("user")
     if user_data:
         user_id = user_data.get("id")
-        await auth_controller.logout(user_id)
+        response = await auth_controller.logout(user_id)
         request.session.clear()
-    return
+        return response
+    return LogoutResponse()

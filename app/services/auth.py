@@ -2,7 +2,14 @@
 
 from dataclasses import dataclass
 
-from app.dtos.auth import LoginRequest, LoginResponse, RegisterRequest, RegisterResponse
+from app.dtos.auth import (
+    LoginRequest,
+    LoginResponse,
+    LogoutResponse,
+    RegisterRequest,
+    RegisterResponse,
+    UserProfile,
+)
 from app.models.user import User
 from app.utils.password import Password
 
@@ -20,7 +27,8 @@ class AuthService:
             if not user or not Password.compare(payload.password, user.password_hash):
                 raise ValueError("Invalid email or password")
 
-            return LoginResponse(id=user.id, email=user.email, full_name=user.full_name)
+            profile = UserProfile(id=user.id, email=user.email, full_name=user.full_name)
+            return LoginResponse(data=profile)
         except Exception as e:
             raise e
 
@@ -35,15 +43,12 @@ class AuthService:
                 password_hash=Password.to_hash(payload.password),
             )
 
-            return RegisterResponse(
-                id=user.id,
-                email=user.email,
-                full_name=user.full_name,
-            )
+            profile = UserProfile(id=user.id, email=user.email, full_name=user.full_name)
+            return RegisterResponse(data=profile)
         except Exception as e:
             raise e
 
-    async def logout_user(self, user_id: str) -> None:
+    async def logout_user(self, user_id: str) -> LogoutResponse:
         """
         Logout a user by invalidating their session.
         """
@@ -51,6 +56,6 @@ class AuthService:
             user = await User.get_or_none(id=user_id)
             if not user:
                 raise ValueError("User not found")
-            return
+            return LogoutResponse()
         except Exception as e:
             raise e
