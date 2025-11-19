@@ -18,5 +18,3 @@ class CreateConversationResponse(BaseModel):
     title: str | None = None
     context: str | None = None
     connection_id: int | None = None
-    created_at: str
-    updated_at: str
