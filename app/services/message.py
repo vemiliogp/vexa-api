@@ -44,3 +44,13 @@ class MessageService:
             "response": response,
             "conversation_id": conversation_id,
         }
+
+    async def get_messages(self, conversation_id: str):
+        """
+        Retrieve messages from a conversation.
+        """
+        try:
+            messages = await Message.filter(conversation_id=conversation_id).all()
+            return messages
+        except Exception as e:
+            raise e

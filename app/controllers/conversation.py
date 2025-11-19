@@ -33,3 +33,11 @@ class ConversationController:
         return await self.conversation_service.message_service.send_message(
             payload, user_id, conversation_id=conversation_id
         )
+
+    async def get_messages(self, conversation_id: str):
+        """
+        Retrieve messages from a conversation.
+        """
+        return await self.conversation_service.message_service.get_messages(
+            conversation_id=conversation_id
+        )

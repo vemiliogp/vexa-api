@@ -58,3 +58,13 @@ class ConversationService:
             return response
         except Exception as e:
             raise e
+
+    async def get_messages(self, conversation_id: str):
+        """
+        Retrieve messages from a conversation.
+        """
+        try:
+            messages = await self.message_service.get_messages(conversation_id)
+            return messages
+        except Exception as e:
+            raise e

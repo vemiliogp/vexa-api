@@ -46,3 +46,14 @@ async def send_message(
         payload, user_id=user.id, conversation_id=conversation_id
     )
     return response
+
+
+@router.get("/{conversation_id}/messages", status_code=200)
+async def get_messages(conversation_id: str, user=Depends(require_active_session)):
+    """
+    Retrieve messages from a conversation endpoint.
+    """
+    messages = await conversation_controller.get_messages(
+        conversation_id=conversation_id
+    )
+    return messages
