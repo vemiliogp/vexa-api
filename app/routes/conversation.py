@@ -8,7 +8,8 @@ from app.middlewares.session import require_active_session
 from app.services.conversation import ConversationService
 
 router = APIRouter(prefix="/conversation", tags=["Conversation"])
-conversation_controller = ConversationController(ConversationService())
+conversation_service = ConversationService()
+conversation_controller = ConversationController(conversation_service)
 
 
 @router.post("/", response_model=CreateConversationResponse, status_code=201)
