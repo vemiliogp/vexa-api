@@ -16,6 +16,6 @@ class ConnectionController:
         self, payload: CreateConnectionRequest
     ) -> CreateConnectionResponse:
         """
-        Create a new connection by delegating to the ConnectionService.
+        Create a new connection.
         """
         return self.connection_service.create_connection(payload)

@@ -1,7 +1,5 @@
 """Connection routes module."""
 
-from logging import info
-
 from fastapi import APIRouter, Depends
 
 from app.controllers.connection import ConnectionController
@@ -20,6 +18,5 @@ async def create_connection(
     """
     Create a new connection endpoint.
     """
-    info(user)
     connection = await connection_controller.create_connection(payload)
     return connection

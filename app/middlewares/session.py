@@ -3,7 +3,7 @@
 from fastapi import HTTPException, Request, status
 
 
-def require_active_session(request: Request):
+def require_active_session(request: Request) -> dict:
     """Middleware to ensure an active session exists."""
 
     user = request.session.get("user")
