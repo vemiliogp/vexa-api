@@ -42,7 +42,7 @@ async def send_message(
     """
     Send a message in a conversation endpoint.
     """
-    response = conversation_service.message_service.send_message(
+    response = await conversation_controller.send_message(
         payload, user_id=user.id, conversation_id=conversation_id
     )
     return response

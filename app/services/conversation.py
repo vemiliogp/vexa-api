@@ -46,3 +46,15 @@ class ConversationService:
             return conversations
         except Exception as e:
             raise e
+
+    async def send_message(self, payload: dict, user_id: str, conversation_id: str):
+        """
+        Send a message within a conversation.
+        """
+        try:
+            response = await self.message_service.send_message(
+                payload, user_id, conversation_id
+            )
+            return response
+        except Exception as e:
+            raise e

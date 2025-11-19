@@ -12,10 +12,10 @@ class ConnectionController:
 
     connection_service: ConnectionService
 
-    def create_connection(
+    async def create_connection(
         self, payload: CreateConnectionRequest, user_id: str
     ) -> CreateConnectionResponse:
         """
         Create a new connection.
         """
-        return self.connection_service.create_connection(payload, user_id)
+        return await self.connection_service.create_connection(payload, user_id)
