@@ -1,12 +1,10 @@
 """DTOs for authentication endpoints."""
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field
 
 
 class UserProfile(BaseModel):
     """Shared user profile dto."""
-
-    model_config = ConfigDict(from_attributes=True)
 
     id: int
     email: EmailStr = Field(max_length=50)
