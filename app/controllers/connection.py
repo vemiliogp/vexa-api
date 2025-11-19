@@ -13,9 +13,9 @@ class ConnectionController:
     connection_service: ConnectionService
 
     def create_connection(
-        self, payload: CreateConnectionRequest
+        self, payload: CreateConnectionRequest, user_id: str
     ) -> CreateConnectionResponse:
         """
         Create a new connection.
         """
-        return self.connection_service.create_connection(payload)
+        return self.connection_service.create_connection(payload, user_id)

@@ -12,7 +12,7 @@ class ConnectionService:
     """Service to handle connections."""
 
     async def create_connection(
-        self, payload: CreateConnectionRequest
+        self, payload: CreateConnectionRequest, user_id: str
     ) -> CreateConnectionResponse:
         """
         Register a new connection by user.
@@ -25,7 +25,7 @@ class ConnectionService:
                 description=payload.description,
                 engine=payload.engine,
                 encrypted_url=encrypted_url,
-                user_id=1,
+                user_id=user_id,
             )
 
             return CreateConnectionResponse(

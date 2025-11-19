@@ -18,5 +18,5 @@ async def create_connection(
     """
     Create a new connection endpoint.
     """
-    connection = await connection_controller.create_connection(payload)
+    connection = await connection_controller.create_connection(payload, user_id=user.id)
     return connection

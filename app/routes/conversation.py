@@ -18,5 +18,7 @@ async def create_conversation(
     """
     Create a new conversation endpoint.
     """
-    conversation = await conversation_controller.create_conversation(payload)
+    conversation = await conversation_controller.create_conversation(
+        payload, user_id=user.id
+    )
     return conversation

@@ -11,7 +11,7 @@ class ConversationService:
     """Service to handle conversations."""
 
     async def create_conversation(
-        self, payload: CreateConversationRequest
+        self, payload: CreateConversationRequest, user_id: str
     ) -> CreateConversationResponse:
         """
         Register a new conversation by user.
@@ -21,7 +21,7 @@ class ConversationService:
                 title=payload.title,
                 context=payload.context,
                 connection_id=payload.connection_id,
-                user_id=1,
+                user_id=user_id,
             )
 
             return CreateConversationResponse(

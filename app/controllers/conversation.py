@@ -13,9 +13,9 @@ class ConversationController:
     conversation_service: ConversationService
 
     def create_conversation(
-        self, payload: CreateConversationRequest
+        self, payload: CreateConversationRequest, user_id: str
     ) -> CreateConversationResponse:
         """
         Create a new conversation.
         """
-        return self.conversation_service.create_conversation(payload)
+        return self.conversation_service.create_conversation(payload, user_id)
