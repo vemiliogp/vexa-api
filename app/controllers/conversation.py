@@ -26,8 +26,10 @@ class ConversationController:
         """
         return self.conversation_service.get_conversations(user_id)
 
-    def send_message(self, payload: dict, user_id: str):
+    def send_message(self, payload: dict, user_id: str, conversation_id: str):
         """
         Send a message in a conversation.
         """
-        return self.conversation_service.message_service.send_message(payload, user_id)
+        return self.conversation_service.message_service.send_message(
+            payload, user_id, conversation_id=conversation_id
+        )
