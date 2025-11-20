@@ -21,8 +21,11 @@ async def register(payload: RegisterRequest):
     """
     Register an user endpoint.
     """
-    user = await auth_controller.register(payload)
-    return user
+    try:
+        user = await auth_controller.register(payload)
+        return user
+    except Exception as e:
+        raise e
 
 
 @router.post("/login", response_model=LoginResponse)
@@ -30,9 +33,12 @@ async def login(payload: LoginRequest, request: Request):
     """
     Login an user endpoint.
     """
-    user = await auth_controller.login(payload)
-    request.session["user"] = user.data.model_dump()
-    return user
+    try:
+        user = await auth_controller.login(payload)
+        request.session["user"] = user.data.model_dump()
+        return user
+    except Exception as e:
+        raise e
 
 
 @router.post("/logout", response_model=LogoutResponse)
@@ -40,10 +46,13 @@ async def logout(request: Request):
     """
     Logout an user endpoint.
     """
-    user_data = request.session.get("user")
-    if user_data:
-        user_id = user_data.get("id")
-        response = await auth_controller.logout(user_id)
-        request.session.clear()
-        return response
-    return LogoutResponse()
+    try:
+        user_data = request.session.get("user")
+        if user_data:
+            user_id = user_data.get("id")
+            response = await auth_controller.logout(user_id)
+            request.session.clear()
+            return response
+        return LogoutResponse()
+    except Exception as e:
+        raise e

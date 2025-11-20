@@ -3,7 +3,8 @@
 from os import getenv
 
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
+from fastapi.responses import JSONResponse
 from starlette.middleware.sessions import SessionMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 
@@ -31,3 +32,19 @@ register_tortoise(
     generate_schemas=True,
     add_exception_handlers=True,
 )
+
+
+@app.exception_handler(Exception)
+async def unhandled_error_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=(
+            exc.status_code
+            if hasattr(exc, "status_code")
+            else status.HTTP_500_INTERNAL_SERVER_ERROR
+        ),
+        content={
+            "message": (
+                str(exc.message) if hasattr(exc, "message") else "Internal Server Error"
+            )
+        },
+    )

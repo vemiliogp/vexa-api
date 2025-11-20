@@ -22,16 +22,25 @@ class AuthController:
         """
         Login a user and return an authentication session.
         """
-        return await self.auth_service.authenticate_user(payload)
+        try:
+            return await self.auth_service.authenticate_user(payload)
+        except Exception as e:
+            raise e
 
     async def register(self, payload: RegisterRequest) -> RegisterResponse:
         """
         Register a new user.
         """
-        return await self.auth_service.register_user(payload)
+        try:
+            return await self.auth_service.register_user(payload)
+        except Exception as e:
+            raise e
 
     async def logout(self, user_id: str) -> LogoutResponse:
         """
         Logout a user by invalidating their session.
         """
-        return await self.auth_service.logout_user(user_id)
+        try:
+            return await self.auth_service.logout_user(user_id)
+        except Exception as e:
+            raise e

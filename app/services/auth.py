@@ -10,6 +10,7 @@ from app.dtos.auth import (
     RegisterResponse,
     UserProfile,
 )
+from app.exceptions.bad_request import BadRequestException
 from app.models.user import User
 from app.utils.password import Password
 
@@ -25,7 +26,7 @@ class AuthService:
         try:
             user = await User.get_or_none(email=payload.email)
             if not user or not Password.compare(payload.password, user.password_hash):
-                raise ValueError("Invalid email or password")
+                raise BadRequestException("Invalid email or password")
 
             profile = UserProfile(
                 id=user.id, email=user.email, full_name=user.full_name
