@@ -31,15 +31,15 @@ class EmailService:
     smtp_config = {
         "host": getenv("MAILER_HOST"),
         "port": int(getenv("MAILER_PORT", "465")),
-        "ssl": getenv("MAILER_SSL", "True").lower() == "True",
+        "ssl": getenv("MAILER_SSL", "True") == "True",
         "user": getenv("MAILER_USER"),
         "password": getenv("MAILER_PASSWORD"),
     }
 
     def send_email(self, options: SendMailOptions) -> bool:
-        """Send an email with the given options."""
-        print(options)
-
+        """
+        Send an email with the given options.
+        """
         message = html(
             html=options.html_body,
             subject=options.subject,
