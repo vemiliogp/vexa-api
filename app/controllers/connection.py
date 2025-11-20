@@ -18,4 +18,9 @@ class ConnectionController:
         """
         Create a new connection.
         """
-        return await self.connection_service.create_connection(payload, user_id)
+        try:
+            return await self.connection_service.create_connection(
+                payload=payload, user_id=user_id
+            )
+        except Exception as e:
+            raise e

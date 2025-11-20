@@ -60,7 +60,7 @@ class AuthService:
         try:
             user = await User.get_or_none(id=user_id)
             if not user:
-                raise ValueError("User not found")
+                raise BadRequestException("User not found")
             return LogoutResponse()
         except Exception as e:
             raise e

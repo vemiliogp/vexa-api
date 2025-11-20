@@ -16,4 +16,7 @@ class HealthController:
         """
         Get the API health status.
         """
-        return self.health_service.check_health()
+        try:
+            return self.health_service.check_health()
+        except Exception as e:
+            raise e
