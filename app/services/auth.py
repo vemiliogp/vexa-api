@@ -27,7 +27,9 @@ class AuthService:
             if not user or not Password.compare(payload.password, user.password_hash):
                 raise ValueError("Invalid email or password")
 
-            profile = UserProfile(id=user.id, email=user.email, full_name=user.full_name)
+            profile = UserProfile(
+                id=user.id, email=user.email, full_name=user.full_name
+            )
             return LoginResponse(data=profile)
         except Exception as e:
             raise e
@@ -43,7 +45,9 @@ class AuthService:
                 password_hash=Password.to_hash(payload.password),
             )
 
-            profile = UserProfile(id=user.id, email=user.email, full_name=user.full_name)
+            profile = UserProfile(
+                id=user.id, email=user.email, full_name=user.full_name
+            )
             return RegisterResponse(data=profile)
         except Exception as e:
             raise e

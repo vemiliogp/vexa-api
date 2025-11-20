@@ -2,7 +2,11 @@
 
 from dataclasses import dataclass
 
-from app.dtos.connection import CreateConnectionRequest, CreateConnectionResponse
+from app.dtos.connection import (
+    ConnectionProfile,
+    CreateConnectionRequest,
+    CreateConnectionResponse,
+)
 from app.models.connection import Connection
 from app.utils.encrypt import Encrypt
 
@@ -28,12 +32,17 @@ class ConnectionService:
                 user_id=user_id,
             )
 
-            return CreateConnectionResponse(
+            profile = ConnectionProfile(
                 id=connection.id,
                 name=connection.name,
                 description=connection.description,
                 engine=connection.engine,
                 url=connection.encrypted_url,
+            )
+
+            return CreateConnectionResponse(
+                data=profile,
+                message="Connection created successfully",
             )
         except Exception as e:
             raise e
