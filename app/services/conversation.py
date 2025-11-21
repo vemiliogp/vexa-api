@@ -3,9 +3,9 @@
 from dataclasses import dataclass
 
 from app.dtos.conversation import (
+    ConversationProfile,
     CreateConversationRequest,
     CreateConversationResponse,
-    ConversationProfile,
 )
 from app.models.conversation import Conversation
 from app.services.message import MessageService

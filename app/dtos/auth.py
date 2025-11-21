@@ -7,7 +7,7 @@ class UserProfile(BaseModel):
     """Shared user profile dto."""
 
     id: int
-    email: EmailStr 
+    email: EmailStr
     full_name: str | None
 
 
