@@ -45,6 +45,17 @@ class ConversationController:
         except Exception as e:
             raise e
 
+    async def send_audio_message(self, file, user_id: str, conversation_id: str):
+        """
+        Send an audio message in a conversation.
+        """
+        try:
+            return await self.conversation_service.message_service.send_audio_message(
+                file=file, user_id=user_id, conversation_id=conversation_id
+            )
+        except Exception as e:
+            raise e
+
     async def get_messages(self, conversation_id: str):
         """
         Retrieve messages from a conversation.

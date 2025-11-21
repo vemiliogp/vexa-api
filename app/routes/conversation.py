@@ -1,6 +1,6 @@
 """Conversation routes module."""
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 
 from app.controllers.conversation import ConversationController
 from app.dtos.conversation import CreateConversationRequest, CreateConversationResponse
@@ -35,7 +35,7 @@ async def get_conversations(user=Depends(require_active_session)):
     return conversations
 
 
-@router.post("/{conversation_id}/message", status_code=200)
+@router.post("/{conversation_id}/message/text", status_code=200)
 async def send_message(
     conversation_id: str, payload: dict, user=Depends(require_active_session)
 ):
@@ -44,6 +44,21 @@ async def send_message(
     """
     response = await conversation_controller.send_message(
         payload, user_id=user.id, conversation_id=conversation_id
+    )
+    return response
+
+
+@router.post("/{conversation_id}/message/audio", status_code=200)
+async def send_audio_message(
+    conversation_id: str,
+    file: UploadFile = File(...),
+    user=Depends(require_active_session),
+):
+    """
+    Send an audio message in a conversation endpoint.
+    """
+    response = await conversation_controller.send_audio_message(
+        file=file, user_id=user.id, conversation_id=conversation_id
     )
     return response
 

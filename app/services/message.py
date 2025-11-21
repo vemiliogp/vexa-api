@@ -38,6 +38,35 @@ class MessageService:
 
         return {"result": response.choices[0].message.content}
 
+    async def send_audio_message(self, file, user_id: str, conversation_id: str):
+        """
+        Send an audio message in a conversation.
+        """
+        content = {
+            "role": "user",
+            "content": f"Audio message received: {file.filename}",
+        }
+        await Message.create(
+            content=content,
+            user_id=user_id,
+            conversation_id=conversation_id,
+        )
+
+        response = completion(
+            model="ollama/qwen3:1.7b",
+            messages=[
+                content,
+            ],
+        )
+
+        await Message.create(
+            content=response.choices[0].message,
+            user_id=user_id,
+            conversation_id=conversation_id,
+        )
+
+        return {"result": response.choices[0].message.content}
+
     async def get_messages(self, conversation_id: str):
         """
         Retrieve messages from a conversation.
