@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from litellm import completion
 
 from app.models.message import Message
+from app.services.transcription import TranscriptionService
 
 
 @dataclass
@@ -42,10 +43,17 @@ class MessageService:
         """
         Send an audio message in a conversation.
         """
+
+        transcription_service = TranscriptionService(model="tiny")
+        transcription_result = await transcription_service.transcribe(file)
+
+        print(transcription_result)
+
         content = {
             "role": "user",
-            "content": f"Audio message received: {file.filename}",
+            "content": f"Traduce al español y responde unicamente con la respuesta a la pregunta: {transcription_result['transcription']}",
         }
+
         await Message.create(
             content=content,
             user_id=user_id,

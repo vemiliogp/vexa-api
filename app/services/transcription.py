@@ -1,7 +1,10 @@
 """Transcription service module."""
 
 from dataclasses import dataclass
+from os import path, remove
+from tempfile import NamedTemporaryFile
 
+from fastapi import File
 from whisper import Whisper, load_model
 
 
@@ -9,14 +12,21 @@ from whisper import Whisper, load_model
 class TranscriptionService:
     """Service for handling audio transcriptions."""
 
-    model = "base"
+    model: str = "base"
     client: Whisper = load_model(model)
 
-    def transcribe(self, audio_file_path: str) -> str:
+    async def transcribe(self, file: File) -> dict:
         """Transcribe the given audio file and return the text."""
 
+        with NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
+            tmp.write(await file.read())
+            tmp_path = tmp.name
+
         try:
-            result = self.client.transcribe(audio_file_path)
+            result = self.client.transcribe(tmp_path)
             return {"transcription": result["text"]}
         except Exception as e:
             raise e
+        finally:
+            if path.exists(tmp_path):
+                remove(tmp_path)

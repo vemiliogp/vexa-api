@@ -21,7 +21,7 @@ class StorageService:
         region_name="us-east-1",
     )
 
-    def save_file(self, bucket_name: str, object_name: str) -> bool:
+    def save_file(self, bucket_name: str, object_name: str) -> dict:
         """
         Save a file to the specified bucket.
         """
