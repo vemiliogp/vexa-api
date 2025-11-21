@@ -36,14 +36,7 @@ class MessageService:
             conversation_id=conversation_id,
         )
 
-        # Placeholder implementation
-        return {
-            "message": "Message sent",
-            "user_id": user_id,
-            "payload": payload,
-            "response": response,
-            "conversation_id": conversation_id,
-        }
+        return {"result": response.choices[0].message.content}
 
     async def get_messages(self, conversation_id: str):
         """

@@ -2,7 +2,11 @@
 
 from dataclasses import dataclass
 
-from app.dtos.conversation import CreateConversationRequest, CreateConversationResponse
+from app.dtos.conversation import (
+    CreateConversationRequest,
+    CreateConversationResponse,
+    ConversationProfile,
+)
 from app.models.conversation import Conversation
 from app.services.message import MessageService
 
@@ -27,13 +31,14 @@ class ConversationService:
                 user_id=user_id,
             )
 
-            return CreateConversationResponse(
+            profile = ConversationProfile(
                 id=conversation.id,
                 title=conversation.title,
                 context=conversation.context,
                 connection_id=conversation.connection_id,
-                user_id=conversation.user_id,
             )
+
+            return CreateConversationResponse(data=profile)
         except Exception as e:
             raise e
 

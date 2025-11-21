@@ -3,6 +3,15 @@
 from pydantic import BaseModel, Field
 
 
+class ConversationProfile(BaseModel):
+    """Shared conversation profile dto."""
+
+    id: int
+    title: str | None = None
+    context: str | None = None
+    connection_id: int | None = None
+
+
 class CreateConversationRequest(BaseModel):
     """Payload expected by the create conversation endpoint."""
 
@@ -14,7 +23,5 @@ class CreateConversationRequest(BaseModel):
 class CreateConversationResponse(BaseModel):
     """Response returned by the create conversation endpoint."""
 
-    id: int
-    title: str | None = None
-    context: str | None = None
-    connection_id: int | None = None
+    data: ConversationProfile
+    message: str = "Conversation created successfully"
