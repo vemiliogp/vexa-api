@@ -7,8 +7,8 @@ class UserProfile(BaseModel):
     """Shared user profile dto."""
 
     id: int
-    email: EmailStr = Field(max_length=50)
-    full_name: str = Field(max_length=100, default="")
+    email: EmailStr 
+    full_name: str | None
 
 
 class LoginRequest(BaseModel):
@@ -43,5 +43,4 @@ class RegisterResponse(BaseModel):
 class LogoutResponse(BaseModel):
     """Payload returned by the logout endpoint."""
 
-    data: dict = Field(default_factory=dict)
     message: str = "User logged out successfully"

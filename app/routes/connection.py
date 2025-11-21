@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 
 from app.controllers.connection import ConnectionController
 from app.dtos.connection import CreateConnectionRequest, CreateConnectionResponse
-from app.middlewares.session import require_active_session
+from app.middlewares.require_active_session import require_active_session
 from app.services.connection import ConnectionService
 
 router = APIRouter(prefix="/connection", tags=["Connection"])

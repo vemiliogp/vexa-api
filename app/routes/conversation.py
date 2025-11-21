@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 
 from app.controllers.conversation import ConversationController
 from app.dtos.conversation import CreateConversationRequest, CreateConversationResponse
-from app.middlewares.session import require_active_session
+from app.middlewares.require_active_session import require_active_session
 from app.services.conversation import ConversationService
 from app.services.message import MessageService
 
