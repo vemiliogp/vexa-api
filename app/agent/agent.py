@@ -45,8 +45,8 @@ class Agent:
                     break
 
                 continue
-            else:
-                info(f"Final response: {message.content}")
-                break
+
+            info(f"Final response: {message.content}")
+            break
 
         return message.content
