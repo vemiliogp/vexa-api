@@ -1,6 +1,4 @@
-"""
-Router registration.
-"""
+"""Router registration."""
 
 from fastapi import FastAPI
 
