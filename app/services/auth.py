@@ -40,6 +40,10 @@ class AuthService:
         Register a new user.
         """
         try:
+            existing_user = await User.get_or_none(email=payload.email)
+            if existing_user:
+                raise BadRequestException("Email already in use")
+
             user = await User.create(
                 email=payload.email,
                 full_name=payload.full_name,
