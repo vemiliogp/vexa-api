@@ -8,6 +8,7 @@ from litellm import completion
 
 from app.agent.tools import tools
 from app.agent.tools.run_query import run_query
+from app.agent.tools.describe_tables import describe_table
 
 
 @dataclass
@@ -39,6 +40,9 @@ class Agent:
 
                 if call.function.name == "run_query":
                     tool_response = run_query(**args)
+                    info(f"Tool response: {tool_response}")
+                elif call.function.name == "describe_table":
+                    tool_response = describe_table(**args)
                     info(f"Tool response: {tool_response}")
                 else:
                     error(f"Unknown tool: {call.function.name}")
