@@ -17,8 +17,8 @@ class CreateConnectionRequest(BaseModel):
 
     name: str = Field(max_length=50)
     description: str | None = Field(default=None, max_length=100)
-    engine: str = Field(pattern="^(postgres|mysql|sqlite)$")
-    url: str = Field(min_length=1)
+    engine: str = Field(pattern=r"^(postgres)$")
+    url: str = Field(min_length=1, pattern=r"^(postgres|postgresql):\/\/[^\s]+$")
 
 
 class CreateConnectionResponse(BaseModel):
