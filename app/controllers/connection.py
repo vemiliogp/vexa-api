@@ -2,7 +2,11 @@
 
 from dataclasses import dataclass
 
-from app.dtos.connection import CreateConnectionRequest, CreateConnectionResponse
+from app.dtos.connection import (
+    CreateConnectionRequest,
+    CreateConnectionResponse,
+    GetConnectionsResponse,
+)
 from app.services.connection import ConnectionService
 
 
@@ -22,5 +26,14 @@ class ConnectionController:
             return await self.connection_service.create_connection(
                 payload=payload, user_id=user_id
             )
+        except Exception as e:
+            raise e
+
+    async def get_connections(self, user_id: str) -> GetConnectionsResponse:
+        """
+        Retrieve all connections for a user.
+        """
+        try:
+            return await self.connection_service.get_connections(user_id=user_id)
         except Exception as e:
             raise e

@@ -6,6 +6,7 @@ from app.dtos.connection import (
     ConnectionProfile,
     CreateConnectionRequest,
     CreateConnectionResponse,
+    GetConnectionsResponse,
 )
 from app.models.connection import Connection
 from app.utils.encrypt import Encrypt
@@ -43,5 +44,24 @@ class ConnectionService:
                 data=profile,
                 message="Connection created successfully",
             )
+        except Exception as e:
+            raise e
+
+    async def get_connections(self, user_id: str) -> GetConnectionsResponse:
+        """
+        Retrieve all connections for a user.
+        """
+        try:
+            connections = await Connection.filter(user_id=user_id).all()
+            profiles = [
+                ConnectionProfile(
+                    id=connection.id,
+                    name=connection.name,
+                    description=connection.description,
+                    engine=connection.engine,
+                )
+                for connection in connections
+            ]
+            return GetConnectionsResponse(data=profiles)
         except Exception as e:
             raise e

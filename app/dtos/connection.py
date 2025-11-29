@@ -26,3 +26,10 @@ class CreateConnectionResponse(BaseModel):
 
     data: ConnectionProfile
     message: str = "Connection created successfully"
+
+
+class GetConnectionsResponse(BaseModel):
+    """Response returned by the get connections endpoint."""
+
+    data: list[ConnectionProfile] = Field(default_factory=list)
+    message: str = "Connections retrieved successfully"
