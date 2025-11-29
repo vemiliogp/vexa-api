@@ -33,7 +33,7 @@ class ConnectionService:
                 user_id=user_id,
             )
 
-            profile = ConnectionProfile(
+            data = ConnectionProfile(
                 id=connection.id,
                 name=connection.name,
                 description=connection.description,
@@ -41,7 +41,7 @@ class ConnectionService:
             )
 
             return CreateConnectionResponse(
-                data=profile,
+                data=data,
                 message="Connection created successfully",
             )
         except Exception as e:
@@ -53,7 +53,7 @@ class ConnectionService:
         """
         try:
             connections = await Connection.filter(user_id=user_id).all()
-            profiles = [
+            data = [
                 ConnectionProfile(
                     id=connection.id,
                     name=connection.name,
@@ -62,6 +62,6 @@ class ConnectionService:
                 )
                 for connection in connections
             ]
-            return GetConnectionsResponse(data=profiles)
+            return GetConnectionsResponse(data=data)
         except Exception as e:
             raise e
