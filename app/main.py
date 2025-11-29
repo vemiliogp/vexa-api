@@ -4,6 +4,7 @@ from os import getenv
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.sessions import SessionMiddleware
 from tortoise.contrib.fastapi import register_tortoise
@@ -21,6 +22,14 @@ app.add_middleware(
     max_age=60 * 60 * 24,
     same_site="lax",
     https_only=False,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 register_routes(app)
