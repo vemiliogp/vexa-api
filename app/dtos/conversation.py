@@ -5,8 +5,8 @@ from pydantic import BaseModel, Field
 from app.models.conversation import ModelEnum
 
 
-class ConversationProfile(BaseModel):
-    """Shared conversation profile dto."""
+class ConversationData(BaseModel):
+    """Shared conversation data dto."""
 
     id: int
     title: str | None = None
@@ -27,5 +27,5 @@ class CreateConversationRequest(BaseModel):
 class CreateConversationResponse(BaseModel):
     """Response returned by the create conversation endpoint."""
 
-    data: ConversationProfile
+    data: ConversationData
     message: str = "Conversation created successfully"

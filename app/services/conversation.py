@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 
 from app.dtos.conversation import (
-    ConversationProfile,
+    ConversationData,
     CreateConversationRequest,
     CreateConversationResponse,
 )
@@ -32,14 +32,15 @@ class ConversationService:
                 model=payload.model,
             )
 
-            profile = ConversationProfile(
+            data = ConversationData(
                 id=conversation.id,
                 title=conversation.title,
                 context=conversation.context,
                 connection_id=conversation.connection_id,
+                model=conversation.model,
             )
 
-            return CreateConversationResponse(data=profile)
+            return CreateConversationResponse(data=data)
         except Exception as e:
             raise e
 
