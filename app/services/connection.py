@@ -37,7 +37,6 @@ class ConnectionService:
                 name=connection.name,
                 description=connection.description,
                 engine=connection.engine,
-                url=connection.encrypted_url,
             )
 
             return CreateConnectionResponse(

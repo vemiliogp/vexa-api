@@ -10,7 +10,6 @@ class ConnectionProfile(BaseModel):
     name: str
     description: str | None
     engine: str
-    url: str
 
 
 class CreateConnectionRequest(BaseModel):
