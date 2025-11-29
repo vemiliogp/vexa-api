@@ -2,6 +2,8 @@
 
 from pydantic import BaseModel, Field
 
+from app.models.connection import EngineEnum
+
 
 class ConnectionData(BaseModel):
     """Shared connection data dto."""
@@ -9,7 +11,7 @@ class ConnectionData(BaseModel):
     id: int
     name: str
     description: str | None
-    engine: str
+    engine: EngineEnum
 
 
 class CreateConnectionRequest(BaseModel):
@@ -17,7 +19,7 @@ class CreateConnectionRequest(BaseModel):
 
     name: str = Field(max_length=50)
     description: str | None = Field(default=None, max_length=100)
-    engine: str = Field(pattern=r"^(postgres)$")
+    engine: EngineEnum = Field(pattern=r"^(postgres)$")
     url: str = Field(min_length=1, pattern=r"^(postgres|postgresql):\/\/[^\s]+$")
 
 

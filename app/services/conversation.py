@@ -29,6 +29,7 @@ class ConversationService:
                 context=payload.context,
                 connection_id=payload.connection_id,
                 user_id=user_id,
+                model=payload.model,
             )
 
             profile = ConversationProfile(

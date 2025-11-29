@@ -1,10 +1,18 @@
 """Conversation model definition."""
 
+from enum import Enum
+
 from tortoise import fields
 from tortoise.models import Model
 
 from app.models.connection import Connection
 from app.models.user import User
+
+
+class ModelEnum(str, Enum):
+    """Model types."""
+
+    DEEPSEEK_R1 = "deepseek-r1"
 
 
 class Conversation(Model):
@@ -13,6 +21,7 @@ class Conversation(Model):
     id = fields.IntField(pk=True)
     title = fields.CharField(max_length=50, null=True)
     context = fields.TextField(null=True)
+    model = fields.CharEnumField(ModelEnum)
 
     user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
         "models.User", related_name="conversations", on_delete=fields.CASCADE
