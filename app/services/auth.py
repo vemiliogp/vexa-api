@@ -8,7 +8,7 @@ from app.dtos.auth import (
     LogoutResponse,
     RegisterRequest,
     RegisterResponse,
-    UserProfile,
+    UserData,
 )
 from app.exceptions.bad_request import BadRequestException
 from app.models.user import User
@@ -28,7 +28,7 @@ class AuthService:
             if not user or not Password.compare(payload.password, user.password_hash):
                 raise BadRequestException("Invalid email or password")
 
-            data = UserProfile(id=user.id, email=user.email, full_name=user.full_name)
+            data = UserData(id=user.id, email=user.email, full_name=user.full_name)
             return LoginResponse(data=data)
         except Exception as e:
             raise e
@@ -48,7 +48,7 @@ class AuthService:
                 password_hash=Password.to_hash(payload.password),
             )
 
-            data = UserProfile(id=user.id, email=user.email, full_name=user.full_name)
+            data = UserData(id=user.id, email=user.email, full_name=user.full_name)
             return RegisterResponse(data=data)
         except Exception as e:
             raise e

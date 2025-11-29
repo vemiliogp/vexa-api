@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 
 from app.dtos.connection import (
-    ConnectionProfile,
+    ConnectionData,
     CreateConnectionRequest,
     CreateConnectionResponse,
     GetConnectionsResponse,
@@ -33,7 +33,7 @@ class ConnectionService:
                 user_id=user_id,
             )
 
-            data = ConnectionProfile(
+            data = ConnectionData(
                 id=connection.id,
                 name=connection.name,
                 description=connection.description,
@@ -54,7 +54,7 @@ class ConnectionService:
         try:
             connections = await Connection.filter(user_id=user_id).all()
             data = [
-                ConnectionProfile(
+                ConnectionData(
                     id=connection.id,
                     name=connection.name,
                     description=connection.description,

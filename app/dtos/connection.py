@@ -3,8 +3,8 @@
 from pydantic import BaseModel, Field
 
 
-class ConnectionProfile(BaseModel):
-    """Shared connection profile dto."""
+class ConnectionData(BaseModel):
+    """Shared connection data dto."""
 
     id: int
     name: str
@@ -24,12 +24,12 @@ class CreateConnectionRequest(BaseModel):
 class CreateConnectionResponse(BaseModel):
     """Response returned by the create connection endpoint."""
 
-    data: ConnectionProfile
+    data: ConnectionData
     message: str = "Connection created successfully"
 
 
 class GetConnectionsResponse(BaseModel):
     """Response returned by the get connections endpoint."""
 
-    data: list[ConnectionProfile] = Field(default_factory=list)
+    data: list[ConnectionData] = Field(default_factory=list)
     message: str = "Connections retrieved successfully"

@@ -3,8 +3,8 @@
 from pydantic import BaseModel, EmailStr, Field
 
 
-class UserProfile(BaseModel):
-    """Shared user profile dto."""
+class UserData(BaseModel):
+    """Shared user data dto."""
 
     id: int
     email: EmailStr
@@ -21,7 +21,7 @@ class LoginRequest(BaseModel):
 class LoginResponse(BaseModel):
     """Payload returned by the login endpoint."""
 
-    data: UserProfile
+    data: UserData
     message: str = "User logged in successfully"
 
 
@@ -36,7 +36,7 @@ class RegisterRequest(BaseModel):
 class RegisterResponse(BaseModel):
     """Payload returned by the registration endpoint."""
 
-    data: UserProfile
+    data: UserData
     message: str = "User registered successfully"
 
 
