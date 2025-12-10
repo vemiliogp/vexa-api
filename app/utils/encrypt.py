@@ -20,7 +20,11 @@ class Encrypt:
         return encrypted.decode()
 
     @staticmethod
-    def decrypt() -> None:
+    def decrypt(value: str) -> None:
         """
-        Compare a stored hashed password with a supplied password.
+        Decrypt a value using symmetric encryption.
         """
+        key = getenv("ENCRYPT_SECRET")
+        fernet = Fernet(key)
+        decrypted_bytes = fernet.decrypt(value.encode())
+        return decrypted_bytes.decode()

@@ -4,8 +4,13 @@ from dataclasses import dataclass
 
 from litellm import completion
 
+from app.agent.agent import Agent
+from app.exceptions.bad_request import BadRequestException
+from app.models.connection import Connection
+from app.models.conversation import Conversation
 from app.models.message import Message
 from app.services.transcription import TranscriptionService
+from app.utils.encrypt import Encrypt
 
 
 @dataclass
@@ -17,6 +22,10 @@ class MessageService:
         Send a message in a conversation.
         """
 
+        conversation = await Conversation.get_or_none(id=conversation_id)
+        if not conversation:
+            raise BadRequestException("Conversation not found")
+
         content = {"role": "user", "content": payload.get("message", "")}
         await Message.create(
             content=content,
@@ -24,12 +33,14 @@ class MessageService:
             conversation_id=conversation_id,
         )
 
-        response = completion(
-            model="ollama/qwen3:1.7b",
-            messages=[
-                content,
-            ],
-        )
+        connection = await Connection.get_or_none(id=conversation.connection_id)
+        if not connection:
+            raise BadRequestException("Connection not found")
+
+        connection_url = Encrypt.decrypt(connection.encrypted_url)
+        agent = Agent(model=conversation.model, connection_url=connection_url)
+
+        response = agent.run(message=payload.get("message"))
 
         await Message.create(
             content=response.choices[0].message,
