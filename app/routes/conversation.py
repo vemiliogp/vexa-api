@@ -8,7 +8,7 @@ from app.dtos.conversation import (
     CreateConversationResponse,
     GetConversationsResponse,
 )
-from app.dtos.message import GetMessagesResponse
+from app.dtos.message import GetMessagesResponse, SendMessageResponse
 from app.middlewares.require_active_session import require_active_session
 from app.services.conversation import ConversationService
 from app.services.message import MessageService
@@ -40,7 +40,11 @@ async def get_conversations(user=Depends(require_active_session)):
     return conversations
 
 
-@router.post("/{conversation_id}/message/text", status_code=200)
+@router.post(
+    "/{conversation_id}/message/text",
+    response_model=SendMessageResponse,
+    status_code=200,
+)
 async def send_message(
     conversation_id: str, payload: dict, user=Depends(require_active_session)
 ):

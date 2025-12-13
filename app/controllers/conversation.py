@@ -7,6 +7,7 @@ from app.dtos.conversation import (
     CreateConversationResponse,
     GetConversationsResponse,
 )
+from app.dtos.message import GetMessagesResponse, SendMessageResponse
 from app.services.conversation import ConversationService
 
 
@@ -38,9 +39,11 @@ class ConversationController:
         except Exception as e:
             raise e
 
-    async def send_message(self, payload: dict, user_id: str, conversation_id: str):
+    async def send_message(
+        self, payload: dict, user_id: str, conversation_id: str
+    ) -> SendMessageResponse:
         """
-        Send a message in a conversation.
+        Send a text message in a conversation.
         """
         try:
             return await self.conversation_service.message_service.send_message(
@@ -60,7 +63,7 @@ class ConversationController:
         except Exception as e:
             raise e
 
-    async def get_messages(self, conversation_id: str):
+    async def get_messages(self, conversation_id: str) -> GetMessagesResponse:
         """
         Retrieve messages from a conversation.
         """

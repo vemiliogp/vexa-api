@@ -8,7 +8,11 @@ from app.dtos.conversation import (
     CreateConversationResponse,
     GetConversationsResponse,
 )
-from app.dtos.message import GetMessagesResponse
+from app.dtos.message import (
+    GetMessagesResponse,
+    SendMessageRequest,
+    SendMessageResponse,
+)
 from app.models.conversation import Conversation
 from app.services.message import MessageService
 
@@ -66,7 +70,9 @@ class ConversationService:
         except Exception as e:
             raise e
 
-    async def send_message(self, payload: dict, user_id: str, conversation_id: str):
+    async def send_message(
+        self, payload: SendMessageRequest, user_id: str, conversation_id: str
+    ) -> SendMessageResponse:
         """
         Send a message within a conversation.
         """

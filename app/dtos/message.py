@@ -15,3 +15,16 @@ class GetMessagesResponse(BaseModel):
 
     data: list[MessageData] = Field(default_factory=list)
     message: str = "Messages retrieved successfully"
+
+
+class SendMessageRequest(BaseModel):
+    """Payload expected by the send message endpoint."""
+
+    message: str = Field(min_length=1)
+
+
+class SendMessageResponse(BaseModel):
+    """Response returned by the send message endpoint."""
+
+    response: str
+    message: str = "Message sent successfully"

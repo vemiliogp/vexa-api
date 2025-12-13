@@ -5,7 +5,12 @@ from dataclasses import dataclass
 from litellm import completion
 
 from app.agent.agent import Agent
-from app.dtos.message import GetMessagesResponse, MessageData
+from app.dtos.message import (
+    GetMessagesResponse,
+    MessageData,
+    SendMessageRequest,
+    SendMessageResponse,
+)
 from app.exceptions.bad_request import BadRequestException
 from app.models.connection import Connection
 from app.models.conversation import Conversation
@@ -18,7 +23,9 @@ from app.utils.encrypt import Encrypt
 class MessageService:
     """Service to handle messages."""
 
-    async def send_message(self, payload, user_id: str, conversation_id: str):
+    async def send_message(
+        self, payload: SendMessageRequest, user_id: str, conversation_id: str
+    ) -> SendMessageResponse:
         """
         Send a message in a conversation.
         """
@@ -50,7 +57,7 @@ class MessageService:
             conversation_id=conversation_id,
         )
 
-        return {"result": response}
+        return SendMessageResponse(response=response)
 
     async def send_audio_message(self, file, user_id: str, conversation_id: str):
         """
@@ -105,6 +112,7 @@ class MessageService:
                 )
                 for message in messages
             ]
+
             return GetMessagesResponse(data=data)
         except Exception as e:
             raise e
