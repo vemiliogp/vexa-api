@@ -56,7 +56,9 @@ class MessageService:
 
         connection_url = Encrypt.decrypt(connection.encrypted_url)
         agent = Agent(
-            model=conversation.model, connection_url=connection_url, messages=messages_content
+            model=conversation.model,
+            connection_url=connection_url,
+            messages=messages_content,
         )
 
         response = agent.run(message=payload.message)
