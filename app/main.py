@@ -16,6 +16,7 @@ load_dotenv()
 
 app = FastAPI()
 
+
 app.add_middleware(
     SessionMiddleware,
     secret_key=getenv("SESSION_SECRET"),
