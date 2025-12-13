@@ -37,3 +37,14 @@ class ConnectionController:
             return await self.connection_service.get_connections(user_id=user_id)
         except Exception as e:
             raise e
+
+    async def check_connection(self, connection_id: str, user_id: str):
+        """
+        Test if a connection is working properly.
+        """
+        try:
+            return await self.connection_service.check_connection(
+                connection_id, user_id
+            )
+        except Exception as e:
+            raise e

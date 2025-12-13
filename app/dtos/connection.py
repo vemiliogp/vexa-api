@@ -35,3 +35,10 @@ class GetConnectionsResponse(BaseModel):
 
     data: list[ConnectionData] = Field(default_factory=list)
     message: str = "Connections retrieved successfully"
+
+
+class CheckConnectionResponse(BaseModel):
+    """Response returned by the check connection endpoint."""
+
+    success: bool
+    message: str = "Connection checked successfully"

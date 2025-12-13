@@ -42,13 +42,14 @@ class MessageService:
 
         response = agent.run(message=payload.get("message"))
 
+        content = {"role": "assistant", "content": response}
         await Message.create(
-            content=response.choices[0].message,
+            content=content,
             user_id=user_id,
             conversation_id=conversation_id,
         )
 
-        return {"result": response.choices[0].message.content}
+        return {"result": response}
 
     async def send_audio_message(self, file, user_id: str, conversation_id: str):
         """
