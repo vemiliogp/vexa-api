@@ -8,6 +8,7 @@ from app.dtos.conversation import (
     CreateConversationResponse,
     GetConversationsResponse,
 )
+from app.dtos.message import GetMessagesResponse
 from app.models.conversation import Conversation
 from app.services.message import MessageService
 
@@ -89,7 +90,7 @@ class ConversationService:
         except Exception as e:
             raise e
 
-    async def get_messages(self, conversation_id: str):
+    async def get_messages(self, conversation_id: str) -> GetMessagesResponse:
         """
         Retrieve messages from a conversation.
         """

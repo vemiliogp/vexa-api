@@ -8,6 +8,7 @@ from app.dtos.conversation import (
     CreateConversationResponse,
     GetConversationsResponse,
 )
+from app.dtos.message import GetMessagesResponse
 from app.middlewares.require_active_session import require_active_session
 from app.services.conversation import ConversationService
 from app.services.message import MessageService
@@ -67,8 +68,10 @@ async def send_audio_message(
     return response
 
 
-@router.get("/{conversation_id}/messages", status_code=200)
-async def get_messages(conversation_id: str, user=Depends(require_active_session)):
+@router.get(
+    "/{conversation_id}/messages", response_model=GetMessagesResponse, status_code=200
+)
+async def get_messages(conversation_id: str, _user=Depends(require_active_session)):
     """
     Retrieve messages from a conversation endpoint.
     """

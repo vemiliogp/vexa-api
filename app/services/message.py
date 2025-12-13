@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from litellm import completion
 
 from app.agent.agent import Agent
+from app.dtos.message import GetMessagesResponse, MessageData
 from app.exceptions.bad_request import BadRequestException
 from app.models.connection import Connection
 from app.models.conversation import Conversation
@@ -87,12 +88,23 @@ class MessageService:
 
         return {"result": response.choices[0].message.content}
 
-    async def get_messages(self, conversation_id: str):
+    async def get_messages(self, conversation_id: str) -> GetMessagesResponse:
         """
         Retrieve messages from a conversation.
         """
         try:
-            messages = await Message.filter(conversation_id=conversation_id).all()
-            return messages
+            messages = (
+                await Message.filter(conversation_id=conversation_id)
+                .order_by("-created_at")
+                .all()
+            )
+            data = [
+                MessageData(
+                    id=message.id,
+                    content=message.content,
+                )
+                for message in messages
+            ]
+            return GetMessagesResponse(data=data)
         except Exception as e:
             raise e
