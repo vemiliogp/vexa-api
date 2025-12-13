@@ -2,7 +2,11 @@
 
 from dataclasses import dataclass
 
-from app.dtos.conversation import CreateConversationRequest, CreateConversationResponse
+from app.dtos.conversation import (
+    CreateConversationRequest,
+    CreateConversationResponse,
+    GetConversationsResponse,
+)
 from app.services.conversation import ConversationService
 
 
@@ -25,7 +29,7 @@ class ConversationController:
         except Exception as e:
             raise e
 
-    async def get_conversations(self, user_id: str):
+    async def get_conversations(self, user_id: str) -> GetConversationsResponse:
         """
         Retrieve all conversations for a user.
         """

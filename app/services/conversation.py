@@ -6,6 +6,7 @@ from app.dtos.conversation import (
     ConversationData,
     CreateConversationRequest,
     CreateConversationResponse,
+    GetConversationsResponse,
 )
 from app.models.conversation import Conversation
 from app.services.message import MessageService
@@ -44,13 +45,23 @@ class ConversationService:
         except Exception as e:
             raise e
 
-    async def get_conversations(self, user_id: str):
+    async def get_conversations(self, user_id: str) -> GetConversationsResponse:
         """
         Retrieve all conversations for a user.
         """
         try:
             conversations = await Conversation.filter(user_id=user_id).all()
-            return conversations
+            data = [
+                ConversationData(
+                    id=conversation.id,
+                    title=conversation.title,
+                    context=conversation.context,
+                    model=conversation.model,
+                )
+                for conversation in conversations
+            ]
+
+            return GetConversationsResponse(data=data)
         except Exception as e:
             raise e
 

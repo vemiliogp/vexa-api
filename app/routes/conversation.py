@@ -3,7 +3,11 @@
 from fastapi import APIRouter, Depends, File, UploadFile
 
 from app.controllers.conversation import ConversationController
-from app.dtos.conversation import CreateConversationRequest, CreateConversationResponse
+from app.dtos.conversation import (
+    CreateConversationRequest,
+    CreateConversationResponse,
+    GetConversationsResponse,
+)
 from app.middlewares.require_active_session import require_active_session
 from app.services.conversation import ConversationService
 from app.services.message import MessageService
@@ -26,7 +30,7 @@ async def create_conversation(
     return conversation
 
 
-@router.get("/", status_code=200)
+@router.get("/", response_model=GetConversationsResponse, status_code=200)
 async def get_conversations(user=Depends(require_active_session)):
     """
     Retrieve all conversations for a user endpoint.
@@ -42,10 +46,10 @@ async def send_message(
     """
     Send a message in a conversation endpoint.
     """
-    response = await conversation_controller.send_message(
+    conversations = await conversation_controller.send_message(
         payload, user_id=user.id, conversation_id=conversation_id
     )
-    return response
+    return conversations
 
 
 @router.post("/{conversation_id}/message/audio", status_code=200)

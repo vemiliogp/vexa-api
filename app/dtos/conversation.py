@@ -29,3 +29,10 @@ class CreateConversationResponse(BaseModel):
 
     data: ConversationData
     message: str = "Conversation created successfully"
+
+
+class GetConversationsResponse(BaseModel):
+    """Response returned by the get conversations endpoint."""
+
+    data: list[ConversationData] = Field(default_factory=list)
+    message: str = "Conversations retrieved successfully"
