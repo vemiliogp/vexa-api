@@ -2,12 +2,18 @@
 
 from dataclasses import dataclass
 
+from fastapi import File
+
 from app.dtos.conversation import (
     CreateConversationRequest,
     CreateConversationResponse,
     GetConversationsResponse,
 )
-from app.dtos.message import GetMessagesResponse, SendMessageResponse
+from app.dtos.message import (
+    GetMessagesResponse,
+    SendMessageRequest,
+    SendMessageResponse,
+)
 from app.services.conversation import ConversationService
 
 
@@ -40,7 +46,7 @@ class ConversationController:
             raise e
 
     async def send_message(
-        self, payload: dict, user_id: str, conversation_id: str
+        self, payload: SendMessageRequest, user_id: str, conversation_id: str
     ) -> SendMessageResponse:
         """
         Send a text message in a conversation.
@@ -52,7 +58,7 @@ class ConversationController:
         except Exception as e:
             raise e
 
-    async def send_audio_message(self, file, user_id: str, conversation_id: str):
+    async def send_audio_message(self, file: File, user_id: str, conversation_id: str):
         """
         Send an audio message in a conversation.
         """

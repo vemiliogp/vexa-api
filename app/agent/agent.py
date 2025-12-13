@@ -9,6 +9,13 @@ from litellm import completion
 from app.agent.tools import tools
 from app.agent.tools.describe_table import describe_table
 from app.agent.tools.run_query import run_query
+from app.services.database import DatabaseService
+
+mapping = {
+    "deepseek-r1": "deepseek/deepseek-reasoner",
+    "openai/gpt-4o": "openai/gpt-4o",
+    "ollama/gtp-oss": "ollama/gpt-oss",
+}
 
 
 @dataclass
@@ -17,29 +24,36 @@ class Agent:
 
     model: str
     connection_url: str
+    messages: list
 
     def run(self, message: str) -> str:
         """Run the agent loop."""
 
-        messages = [
+        self.messages.append(
             {
                 "role": "system",
-                "content": """
-                    Tu eres un asistente, esta son las tablas que tienes en tu base de datos:
-                    actor,store,address,category,city,country,customer,film_actor,film_category,inventory,language,rental,staff,payment,film
-                    Si tienes duda utiliza las tools correspondientes para inspeccionar dentro de cada una
-                """,
-            },
-            {"role": "user", "content": message},
-        ]
+                "content": f"""Eres un asistente de bases de datos SQL.
+                    Tablas disponibles en la base de datos:
+                    {', '.join(DatabaseService.get_tables(self.connection_url))}
+
+                    Instrucciones:
+                    - Construye consultas SQL precisas basándote en las preguntas del usuario
+                    - Si no estás seguro de algo, inspecciona primero la tabla antes de consultar
+
+                    Responde de forma clara y concisa (solo texto, sin markdown).""",
+            }
+        )
+        self.messages.append({"role": "user", "content": message})
 
         while True:
-            response = completion(model=self.model, messages=messages, tools=tools)
+            print(self.messages)
+            model = mapping[self.model]
+            response = completion(model=model, messages=self.messages, tools=tools)
 
             message = response.choices[0].message
             tool_calls = message.tool_calls or []
 
-            messages.append(message.model_dump())
+            self.messages.append(message.model_dump())
 
             if tool_calls:
                 call = tool_calls[0]
@@ -61,7 +75,7 @@ class Agent:
                     error(f"Unknown tool: {call.function.name}")
                     break
 
-                messages.append(
+                self.messages.append(
                     {
                         "role": "tool",
                         "tool_call_id": call.id,

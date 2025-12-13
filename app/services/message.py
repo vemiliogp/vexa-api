@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 
+from fastapi import File
 from litellm import completion
 
 from app.agent.agent import Agent
@@ -29,26 +30,36 @@ class MessageService:
         """
         Send a message in a conversation.
         """
-
+        print(payload)
         conversation = await Conversation.get_or_none(id=conversation_id)
         if not conversation:
             raise BadRequestException("Conversation not found")
 
-        content = {"role": "user", "content": payload.get("message", "")}
+        connection = await Connection.get_or_none(id=conversation.connection_id)
+        if not connection:
+            raise BadRequestException("Connection not found")
+
+        messages = (
+            await Message.filter(conversation_id=conversation_id)
+            .order_by("-created_at")
+            .all()
+        )
+        messages_content = [message.content for message in messages]
+        print(messages_content)
+
+        content = {"role": "user", "content": payload.message}
         await Message.create(
             content=content,
             user_id=user_id,
             conversation_id=conversation_id,
         )
 
-        connection = await Connection.get_or_none(id=conversation.connection_id)
-        if not connection:
-            raise BadRequestException("Connection not found")
-
         connection_url = Encrypt.decrypt(connection.encrypted_url)
-        agent = Agent(model=conversation.model, connection_url=connection_url)
+        agent = Agent(
+            model=conversation.model, connection_url=connection_url, messages=messages_content
+        )
 
-        response = agent.run(message=payload.get("message"))
+        response = agent.run(message=payload.message)
 
         content = {"role": "assistant", "content": response}
         await Message.create(
@@ -59,7 +70,7 @@ class MessageService:
 
         return SendMessageResponse(response=response)
 
-    async def send_audio_message(self, file, user_id: str, conversation_id: str):
+    async def send_audio_message(self, file: File, user_id: str, conversation_id: str):
         """
         Send an audio message in a conversation.
         """
