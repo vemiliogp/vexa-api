@@ -9,6 +9,7 @@ dependencies = [
     "black>=25.11.0",
     "boto3>=1.41.0",
     "cryptography>=46.0.3",
+    "edge-tts>=7.2.7",
     "emails>=0.6",
     "fastapi[standard]>=0.121.2",
     "isort>=7.0.0",

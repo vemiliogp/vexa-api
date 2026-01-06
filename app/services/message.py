@@ -3,7 +3,6 @@
 from dataclasses import dataclass
 
 from fastapi import File
-from litellm import completion
 
 from app.agent.agent import Agent
 from app.dtos.message import (
@@ -72,41 +71,56 @@ class MessageService:
 
         return SendMessageResponse(response=response)
 
-    async def send_audio_message(self, file: File, user_id: str, conversation_id: str):
+    async def send_audio_message(
+        self, file: File, user_id: str, conversation_id: str
+    ) -> SendMessageResponse:
         """
         Send an audio message in a conversation.
         """
+        conversation = await Conversation.get_or_none(id=conversation_id)
+        if not conversation:
+            raise BadRequestException("Conversation not found")
+
+        connection = await Connection.get_or_none(id=conversation.connection_id)
+        if not connection:
+            raise BadRequestException("Connection not found")
 
         transcription_service = TranscriptionService(model="tiny")
         transcription_result = await transcription_service.transcribe(file)
 
-        print(transcription_result)
+        transcription = transcription_result["transcription"]
 
-        content = {
-            "role": "user",
-            "content": f"Traduce al español y responde unicamente con la respuesta a la pregunta: {transcription_result['transcription']}",
-        }
+        messages = (
+            await Message.filter(conversation_id=conversation_id)
+            .order_by("-created_at")
+            .all()
+        )
+        messages_content = [message.content for message in messages]
 
+        content = {"role": "user", "content": transcription}
         await Message.create(
             content=content,
             user_id=user_id,
             conversation_id=conversation_id,
         )
 
-        response = completion(
-            model="ollama/qwen3:1.7b",
-            messages=[
-                content,
-            ],
+        connection_url = Encrypt.decrypt(connection.encrypted_url)
+        agent = Agent(
+            model=conversation.model,
+            connection_url=connection_url,
+            messages=messages_content,
         )
 
+        response = agent.run(message=transcription)
+
+        content = {"role": "assistant", "content": response}
         await Message.create(
-            content=response.choices[0].message,
+            content=content,
             user_id=user_id,
             conversation_id=conversation_id,
         )
 
-        return {"result": response.choices[0].message.content}
+        return SendMessageResponse(response=response)
 
     async def get_messages(self, conversation_id: str) -> GetMessagesResponse:
         """
