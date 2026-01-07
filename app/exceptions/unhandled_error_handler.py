@@ -13,8 +13,8 @@ async def unhandled_error_handler(_request: Request, exc: Exception):
             else status.HTTP_500_INTERNAL_SERVER_ERROR
         ),
         content={
-            "error_message": (
-                str(exc.message) if hasattr(exc, "message") else "Internal Server Error"
+            "detail": (
+                str(exc.message) if hasattr(exc, "message") else "An unexpected error occurred"
             )
         },
     )

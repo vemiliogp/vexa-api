@@ -9,5 +9,5 @@ async def http_exception_handler(_request: Request, exc: HTTPException):
 
     return JSONResponse(
         status_code=exc.status_code,
-        content={"error_message": exc.detail},
+        content={"detail": exc.detail},
     )

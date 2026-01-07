@@ -1,7 +1,7 @@
 """Auth service module."""
 
 from dataclasses import dataclass
-
+from fastapi import HTTPException
 from app.dtos.auth import (
     LoginRequest,
     LoginResponse,
@@ -10,7 +10,6 @@ from app.dtos.auth import (
     RegisterResponse,
     UserData,
 )
-from app.exceptions.bad_request import BadRequestException
 from app.models.user import User
 from app.utils.password import Password
 
@@ -26,7 +25,7 @@ class AuthService:
         try:
             user = await User.get_or_none(email=payload.email)
             if not user or not Password.compare(payload.password, user.password_hash):
-                raise BadRequestException("Invalid email or password")
+                raise HTTPException(status_code=400, detail="Invalid email or password")
 
             data = UserData(id=user.id, email=user.email, full_name=user.full_name)
             return LoginResponse(data=data)
@@ -40,7 +39,7 @@ class AuthService:
         try:
             existing_user = await User.get_or_none(email=payload.email)
             if existing_user:
-                raise BadRequestException("Email already in use")
+                raise HTTPException("Email already in use")
 
             user = await User.create(
                 email=payload.email,
@@ -60,7 +59,7 @@ class AuthService:
         try:
             user = await User.get_or_none(id=user_id)
             if not user:
-                raise BadRequestException("User not found")
+                raise HTTPException("User not found")
             return LogoutResponse()
         except Exception as e:
             raise e

@@ -14,6 +14,6 @@ async def validation_error_handler(_request: Request, exc: RequestValidationErro
         errors.append({"field": field, "message": msg})
 
     return JSONResponse(
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content={"error_message": "Validation error", "errors": errors},
+        status_code=status.HTTP_400_BAD_REQUEST,
+        content={"detail": "Validation error", "errors": errors},
     )
