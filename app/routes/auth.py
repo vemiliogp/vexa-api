@@ -22,8 +22,7 @@ async def register(payload: RegisterRequest):
     Register an user endpoint.
     """
     try:
-        user = await auth_controller.register(payload)
-        return user
+        return await auth_controller.register(payload)
     except Exception as e:
         raise e
 

@@ -29,10 +29,7 @@ async def create_conversation(
     """
     Create a new conversation endpoint.
     """
-    conversation = await conversation_controller.create_conversation(
-        payload, user_id=user.id
-    )
-    return conversation
+    return await conversation_controller.create_conversation(payload, user_id=user.id)
 
 
 @router.get("/", response_model=GetConversationsResponse, status_code=200)
@@ -40,8 +37,7 @@ async def get_conversations(user=Depends(require_active_session)):
     """
     Retrieve all conversations for a user endpoint.
     """
-    conversations = await conversation_controller.get_conversations(user_id=user.id)
-    return conversations
+    return await conversation_controller.get_conversations(user_id=user.id)
 
 
 @router.post(
@@ -57,10 +53,9 @@ async def send_message(
     """
     Send a message in a conversation endpoint.
     """
-    response = await conversation_controller.send_message(
+    return await conversation_controller.send_message(
         payload, user_id=user.id, conversation_id=conversation_id
     )
-    return response
 
 
 @router.post("/{conversation_id}/message/audio", status_code=200)
@@ -72,10 +67,9 @@ async def send_audio_message(
     """
     Send an audio message in a conversation endpoint.
     """
-    response = await conversation_controller.send_audio_message(
+    return await conversation_controller.send_audio_message(
         file=file, user_id=user.id, conversation_id=conversation_id
     )
-    return response
 
 
 @router.get(
@@ -85,7 +79,4 @@ async def get_messages(conversation_id: str, _user=Depends(require_active_sessio
     """
     Retrieve messages from a conversation endpoint.
     """
-    messages = await conversation_controller.get_messages(
-        conversation_id=conversation_id
-    )
-    return messages
+    return await conversation_controller.get_messages(conversation_id=conversation_id)

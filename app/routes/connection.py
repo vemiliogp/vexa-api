@@ -26,8 +26,7 @@ async def create_connection(
     """
     Create a new connection endpoint.
     """
-    connection = await connection_controller.create_connection(payload, user_id=user.id)
-    return connection
+    return await connection_controller.create_connection(payload, user_id=user.id)
 
 
 @router.get("/", response_model=GetConnectionsResponse, status_code=200)
@@ -35,8 +34,7 @@ async def get_connections(user=Depends(require_active_session)):
     """
     Retrieve all connections for a user endpoint.
     """
-    connections = await connection_controller.get_connections(user_id=user.id)
-    return connections
+    return await connection_controller.get_connections(user_id=user.id)
 
 
 @router.get(
@@ -46,5 +44,4 @@ async def check_connection(connection_id: str, user=Depends(require_active_sessi
     """
     Test if a connection is working properly endpoint.
     """
-    r = await connection_controller.check_connection(connection_id, user_id=user.id)
-    return r
+    return await connection_controller.check_connection(connection_id, user_id=user.id)
