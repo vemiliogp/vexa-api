@@ -11,6 +11,7 @@ wheels/
 
 # Environment variable files
 .env
+.env.docker
 
 # PostgreSQL data directory
 postgresql/
