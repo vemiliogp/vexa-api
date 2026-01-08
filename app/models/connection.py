@@ -12,8 +12,6 @@ class EngineEnum(str, Enum):
     """Database engine types."""
 
     POSTGRES = "postgres"
-    MYSQL = "mysql"
-    SQLITE = "sqlite"
 
 
 class Connection(Model):

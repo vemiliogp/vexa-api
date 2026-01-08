@@ -3,13 +3,13 @@
 from dataclasses import dataclass
 
 from app.dtos.connection import (
+    CheckConnectionRequest,
     CheckConnectionResponse,
     ConnectionData,
     CreateConnectionRequest,
     CreateConnectionResponse,
     GetConnectionsResponse,
 )
-from app.exceptions.bad_request import BadRequestException
 from app.models.connection import Connection
 from app.services.database import DatabaseService
 from app.utils.encrypt import Encrypt
@@ -72,19 +72,13 @@ class ConnectionService:
             raise e
 
     async def check_connection(
-        self, connection_id: str, user_id: str
+        self, payload: CheckConnectionRequest
     ) -> CheckConnectionResponse:
         """
         Check connection
         """
         try:
-            connection = await Connection.get_or_none(id=connection_id, user_id=user_id)
-            if not connection:
-                raise BadRequestException("Connection not found")
-
-            connection_url = Encrypt.decrypt(connection.encrypted_url)
-
-            status = self.database_service.check_connection(connection_url)
+            status = self.database_service.check_connection(payload.url)
 
             return CheckConnectionResponse(success=status)
         except Exception as e:

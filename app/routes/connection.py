@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends
 
 from app.controllers.connection import ConnectionController
 from app.dtos.connection import (
+    CheckConnectionRequest,
     CheckConnectionResponse,
     CreateConnectionRequest,
     CreateConnectionResponse,
@@ -37,11 +38,11 @@ async def get_connections(user=Depends(require_active_session)):
     return await connection_controller.get_connections(user_id=user.id)
 
 
-@router.get(
-    "/{connection_id}/check", response_model=CheckConnectionResponse, status_code=200
-)
-async def check_connection(connection_id: str, user=Depends(require_active_session)):
+@router.post("/check", response_model=CheckConnectionResponse, status_code=200)
+async def check_connection(
+    payload: CheckConnectionRequest, _user=Depends(require_active_session)
+):
     """
     Test if a connection is working properly endpoint.
     """
-    return await connection_controller.check_connection(connection_id, user_id=user.id)
+    return await connection_controller.check_connection(payload)

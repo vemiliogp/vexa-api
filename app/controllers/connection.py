@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 
 from app.dtos.connection import (
+    CheckConnectionRequest,
     CheckConnectionResponse,
     CreateConnectionRequest,
     CreateConnectionResponse,
@@ -40,14 +41,12 @@ class ConnectionController:
             raise e
 
     async def check_connection(
-        self, connection_id: str, user_id: str
+        self, payload: CheckConnectionRequest
     ) -> CheckConnectionResponse:
         """
         Test if a connection is working properly.
         """
         try:
-            return await self.connection_service.check_connection(
-                connection_id, user_id
-            )
+            return await self.connection_service.check_connection(payload)
         except Exception as e:
             raise e

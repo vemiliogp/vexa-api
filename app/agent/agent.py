@@ -28,13 +28,14 @@ class Agent:
 
     def run(self, message: str) -> str:
         """Run the agent loop."""
+        tables = DatabaseService.get_tables(self.connection_url)
 
         self.messages.append(
             {
                 "role": "system",
                 "content": f"""Eres un asistente de bases de datos SQL.
                     Tablas disponibles en la base de datos:
-                    {', '.join(DatabaseService.get_tables(self.connection_url))}
+                    {', '.join(tables)}
 
                     Instrucciones:
                     - Construye consultas SQL precisas basándote en las preguntas del usuario
@@ -46,7 +47,6 @@ class Agent:
         self.messages.append({"role": "user", "content": message})
 
         while True:
-            print(self.messages)
             model = mapping[self.model]
             response = completion(model=model, messages=self.messages, tools=tools)
 

@@ -37,6 +37,12 @@ class GetConnectionsResponse(BaseModel):
     message: str = "Connections retrieved successfully"
 
 
+class CheckConnectionRequest(BaseModel):
+    """Payload expected by the check connection endpoint."""
+
+    url: str = Field(min_length=1, pattern=r"^(postgres|postgresql):\/\/[^\s]+$")
+
+
 class CheckConnectionResponse(BaseModel):
     """Response returned by the check connection endpoint."""
 

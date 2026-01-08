@@ -1,7 +1,9 @@
 """Auth service module."""
 
 from dataclasses import dataclass
-from fastapi import HTTPException
+
+from fastapi import HTTPException, status
+
 from app.dtos.auth import (
     LoginRequest,
     LoginResponse,
@@ -25,7 +27,10 @@ class AuthService:
         try:
             user = await User.get_or_none(email=payload.email)
             if not user or not Password.compare(payload.password, user.password_hash):
-                raise HTTPException(status_code=400, detail="Invalid email or password")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Invalid email or password",
+                )
 
             data = UserData(id=user.id, email=user.email, full_name=user.full_name)
             return LoginResponse(data=data)
@@ -39,7 +44,10 @@ class AuthService:
         try:
             existing_user = await User.get_or_none(email=payload.email)
             if existing_user:
-                raise HTTPException("Email already in use")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Email already in use",
+                )
 
             user = await User.create(
                 email=payload.email,
@@ -59,7 +67,9 @@ class AuthService:
         try:
             user = await User.get_or_none(id=user_id)
             if not user:
-                raise HTTPException("User not found")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+                )
             return LogoutResponse()
         except Exception as e:
             raise e

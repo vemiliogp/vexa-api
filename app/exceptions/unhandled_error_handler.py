@@ -14,7 +14,9 @@ async def unhandled_error_handler(_request: Request, exc: Exception):
         ),
         content={
             "detail": (
-                str(exc.message) if hasattr(exc, "message") else "An unexpected error occurred"
+                str(exc.message)
+                if hasattr(exc, "message")
+                else "An unexpected error occurred"
             )
         },
     )
