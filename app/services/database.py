@@ -32,7 +32,6 @@ class DatabaseService:
                     info(f"Retrieved {len(tables)} tables from database")
                     return tables
         except Exception as e:
-            print(f"Error retrieving tables: {e}")
             error(f"Failed to retrieve tables: {e}")
             return None
 
