@@ -20,7 +20,7 @@ class CreateConversationRequest(BaseModel):
 
     title: str | None = Field(default=None, max_length=50)
     context: str | None = Field(default=None)
-    model: ModelEnum = Field(pattern=r"^(deepseek-r1)$")
+    model: ModelEnum = Field(pattern=r"^(deepseek/r1|openai/gpt-5|openai/gpt-oss)$")
     connection_id: int | None = Field(default=None)
 
 

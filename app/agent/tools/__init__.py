@@ -35,21 +35,4 @@ tools = [
             },
         },
     },
-    {
-        "type": "function",
-        "function": {
-            "name": "send_email",
-            "description": "Send an email to a specified recipient.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "html_body": {
-                        "type": "string",
-                        "description": "The HTML content of the email to send.",
-                    },
-                },
-                "required": ["html_body"],
-            },
-        },
-    },
 ]

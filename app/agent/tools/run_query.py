@@ -12,7 +12,9 @@ def run_query(connection_url: str, query: str) -> list:
         with connect(connection_url) as conn:
             with conn.cursor() as cur:
                 cur.execute(query)
-                return cur.fetchall()
+                rows = cur.fetchall()
+
+                return [[str(val) for val in row] for row in rows]
     except Exception as e:
         error(f"Database query failed: {e}")
         return []

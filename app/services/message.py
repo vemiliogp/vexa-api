@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from fastapi import File
+from fastapi import File, HTTPException, status
 
 from app.agent.agent import Agent
 from app.dtos.message import (
@@ -15,6 +15,7 @@ from app.exceptions.bad_request import BadRequestException
 from app.models.connection import Connection
 from app.models.conversation import Conversation
 from app.models.message import Message
+from app.services.database import DatabaseService
 from app.services.transcription import TranscriptionService
 from app.utils.encrypt import Encrypt
 
@@ -29,42 +30,46 @@ class MessageService:
         """
         Send a message in a conversation.
         """
-        print(payload)
         conversation = await Conversation.get_or_none(id=conversation_id)
         if not conversation:
-            raise BadRequestException("Conversation not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Conversation not found"
+            )
 
         connection = await Connection.get_or_none(id=conversation.connection_id)
         if not connection:
-            raise BadRequestException("Connection not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Connection not found"
+            )
 
-        messages = (
+        messages_ordered = (
             await Message.filter(conversation_id=conversation_id)
-            .order_by("-created_at")
+            .order_by("created_at")
             .all()
         )
-        messages_content = [message.content for message in messages]
-        print(messages_content)
+        messages = [message.content for message in messages_ordered]
 
-        content = {"role": "user", "content": payload.message}
         await Message.create(
-            content=content,
+            content={"role": "user", "content": payload.message},
             user_id=user_id,
             conversation_id=conversation_id,
         )
 
         connection_url = Encrypt.decrypt(connection.encrypted_url)
+        tables = DatabaseService.get_tables(connection_url)
+
         agent = Agent(
             model=conversation.model,
             connection_url=connection_url,
-            messages=messages_content,
+            messages=messages,
+            context=conversation.context,
+            tables=str(tables),
         )
 
         response = agent.run(message=payload.message)
 
-        content = {"role": "assistant", "content": response}
         await Message.create(
-            content=content,
+            content={"role": "assistant", "content": response},
             user_id=user_id,
             conversation_id=conversation_id,
         )
@@ -105,10 +110,13 @@ class MessageService:
         )
 
         connection_url = Encrypt.decrypt(connection.encrypted_url)
+
         agent = Agent(
             model=conversation.model,
             connection_url=connection_url,
             messages=messages_content,
+            context=conversation.context,
+            tables=""
         )
 
         response = agent.run(message=transcription)

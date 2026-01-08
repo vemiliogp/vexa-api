@@ -12,7 +12,9 @@ from app.models.user import User
 class ModelEnum(str, Enum):
     """Model types."""
 
-    DEEPSEEK_R1 = "deepseek-r1"
+    DEEPSEEK_R1 = "deepseek/r1"
+    OPENAI_GPT_5 = "openai/gpt-5"
+    OPENAI_GPT_OSS = "openai/gpt-oss"
 
 
 class Conversation(Model):
