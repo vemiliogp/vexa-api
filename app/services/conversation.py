@@ -77,10 +77,9 @@ class ConversationService:
         Send a message within a conversation.
         """
         try:
-            response = await self.message_service.send_message(
+            return await self.message_service.send_message(
                 payload, user_id, conversation_id
             )
-            return response
         except Exception as e:
             raise e
 
@@ -89,10 +88,9 @@ class ConversationService:
         Send an audio message within a conversation.
         """
         try:
-            response = await self.message_service.send_audio_message(
+            return await self.message_service.send_audio_message(
                 file, user_id, conversation_id
             )
-            return response
         except Exception as e:
             raise e
 
@@ -101,7 +99,6 @@ class ConversationService:
         Retrieve messages from a conversation.
         """
         try:
-            messages = await self.message_service.get_messages(conversation_id)
-            return messages
+            return await self.message_service.get_messages(conversation_id)
         except Exception as e:
             raise e

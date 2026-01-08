@@ -95,35 +95,34 @@ class MessageService:
 
         transcription = transcription_result["transcription"]
 
-        messages = (
+        messages_ordered = (
             await Message.filter(conversation_id=conversation_id)
-            .order_by("-created_at")
+            .order_by("created_at")
             .all()
         )
-        messages_content = [message.content for message in messages]
+        messages = [message.content for message in messages_ordered]
 
-        content = {"role": "user", "content": transcription}
         await Message.create(
-            content=content,
+            content={"role": "user", "content": transcription},
             user_id=user_id,
             conversation_id=conversation_id,
         )
 
         connection_url = Encrypt.decrypt(connection.encrypted_url)
+        tables = DatabaseService.get_tables(connection_url)
 
         agent = Agent(
             model=conversation.model,
             connection_url=connection_url,
-            messages=messages_content,
+            messages=messages,
             context=conversation.context,
-            tables=""
+            tables=str(tables),
         )
 
         response = agent.run(message=transcription)
 
-        content = {"role": "assistant", "content": response}
         await Message.create(
-            content=content,
+            content={"role": "assistant", "content": response},
             user_id=user_id,
             conversation_id=conversation_id,
         )
@@ -137,7 +136,7 @@ class MessageService:
         try:
             messages = (
                 await Message.filter(conversation_id=conversation_id)
-                .order_by("-created_at")
+                .order_by("created_at")
                 .all()
             )
             data = [
