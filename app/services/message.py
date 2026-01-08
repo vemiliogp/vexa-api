@@ -11,7 +11,6 @@ from app.dtos.message import (
     SendMessageRequest,
     SendMessageResponse,
 )
-from app.exceptions.bad_request import BadRequestException
 from app.models.connection import Connection
 from app.models.conversation import Conversation
 from app.models.message import Message
@@ -84,12 +83,15 @@ class MessageService:
         """
         conversation = await Conversation.get_or_none(id=conversation_id)
         if not conversation:
-            raise BadRequestException("Conversation not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Conversation not found"
+            )
 
         connection = await Connection.get_or_none(id=conversation.connection_id)
         if not connection:
-            raise BadRequestException("Connection not found")
-
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Connection not found"
+            )
         transcription_service = TranscriptionService(model="tiny")
         transcription_result = await transcription_service.transcribe(file)
 
