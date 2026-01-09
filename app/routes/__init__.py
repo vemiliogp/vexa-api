@@ -6,6 +6,7 @@ from app.routes.auth import router as auth_router
 from app.routes.connection import router as connection_router
 from app.routes.conversation import router as conversation_router
 from app.routes.health import router as health_router
+from app.routes.insight import router as insight_router
 
 
 def register_routes(app: FastAPI) -> None:
@@ -17,3 +18,4 @@ def register_routes(app: FastAPI) -> None:
     app.include_router(auth_router)
     app.include_router(connection_router)
     app.include_router(conversation_router)
+    app.include_router(insight_router)
