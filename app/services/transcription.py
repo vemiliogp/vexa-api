@@ -18,7 +18,7 @@ class TranscriptionService:
     async def transcribe(self, file: File) -> dict:
         """Transcribe the given audio file and return the text."""
 
-        with NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
+        with NamedTemporaryFile(delete=False) as tmp:
             tmp.write(await file.read())
             tmp_path = tmp.name
 

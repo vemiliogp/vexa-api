@@ -19,6 +19,7 @@ from app.models.message import Message
 from app.services.database import DatabaseService
 from app.services.storage import StorageService
 from app.services.transcription import TranscriptionService
+from app.services.tts import TTSService
 from app.utils.encrypt import Encrypt
 
 
@@ -32,51 +33,55 @@ class MessageService:
         """
         Send a message in a conversation.
         """
-        conversation = await Conversation.get_or_none(id=conversation_id)
-        if not conversation:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Conversation not found"
+        try:
+            conversation = await Conversation.get_or_none(id=conversation_id)
+            if not conversation:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Conversation not found",
+                )
+
+            connection = await Connection.get_or_none(id=conversation.connection_id)
+            if not connection:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="Connection not found"
+                )
+
+            messages_ordered = (
+                await Message.filter(conversation_id=conversation_id)
+                .order_by("created_at")
+                .all()
+            )
+            messages = [message.content for message in messages_ordered]
+
+            await Message.create(
+                content={"role": "user", "content": payload.message},
+                user_id=user_id,
+                conversation_id=conversation_id,
             )
 
-        connection = await Connection.get_or_none(id=conversation.connection_id)
-        if not connection:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Connection not found"
+            connection_url = Encrypt.decrypt(connection.encrypted_url)
+            tables = DatabaseService.get_tables(connection_url)
+
+            agent = Agent(
+                model=conversation.model,
+                connection_url=connection_url,
+                messages=messages,
+                context=conversation.context,
+                tables=str(tables),
             )
 
-        messages_ordered = (
-            await Message.filter(conversation_id=conversation_id)
-            .order_by("created_at")
-            .all()
-        )
-        messages = [message.content for message in messages_ordered]
+            response = agent.run(message=payload.message)
 
-        await Message.create(
-            content={"role": "user", "content": payload.message},
-            user_id=user_id,
-            conversation_id=conversation_id,
-        )
+            await Message.create(
+                content={"role": "assistant", "content": response},
+                user_id=user_id,
+                conversation_id=conversation_id,
+            )
 
-        connection_url = Encrypt.decrypt(connection.encrypted_url)
-        tables = DatabaseService.get_tables(connection_url)
-
-        agent = Agent(
-            model=conversation.model,
-            connection_url=connection_url,
-            messages=messages,
-            context=conversation.context,
-            tables=str(tables),
-        )
-
-        response = agent.run(message=payload.message)
-
-        await Message.create(
-            content={"role": "assistant", "content": response},
-            user_id=user_id,
-            conversation_id=conversation_id,
-        )
-
-        return SendMessageResponse(response=response)
+            return SendMessageResponse(response=response)
+        except Exception as e:
+            raise e
 
     async def send_audio_message(
         self, file: UploadFile, user_id: str, conversation_id: str
@@ -84,60 +89,72 @@ class MessageService:
         """
         Send an audio message in a conversation.
         """
-        conversation = await Conversation.get_or_none(id=conversation_id)
-        if not conversation:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Conversation not found"
+        try:
+            conversation = await Conversation.get_or_none(id=conversation_id)
+            if not conversation:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Conversation not found",
+                )
+
+            connection = await Connection.get_or_none(id=conversation.connection_id)
+            if not connection:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="Connection not found"
+                )
+
+            transcription_service = TranscriptionService(model="tiny")
+            transcription_result = await transcription_service.transcribe(file)
+            transcription = transcription_result["transcription"]
+
+            storage_service = StorageService()
+            storage_service.save_file(
+                bucket_name=f"conversation-{conversation_id}", file=file
             )
 
-        connection = await Connection.get_or_none(id=conversation.connection_id)
-        if not connection:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Connection not found"
+            messages_ordered = (
+                await Message.filter(conversation_id=conversation_id)
+                .order_by("created_at")
+                .all()
+            )
+            messages = [message.content for message in messages_ordered]
+
+            await Message.create(
+                content={"role": "user", "content": transcription},
+                user_id=user_id,
+                conversation_id=conversation_id,
             )
 
-        transcription_service = TranscriptionService(model="tiny")
-        transcription_result = await transcription_service.transcribe(file)
-        transcription = transcription_result["transcription"]
+            connection_url = Encrypt.decrypt(connection.encrypted_url)
+            tables = DatabaseService.get_tables(connection_url)
 
-        storage_service = StorageService()
-        url = storage_service.save_file(
-            bucket_name=f"conversation-{conversation_id}", file=file
-        )
+            agent = Agent(
+                model=conversation.model,
+                connection_url=connection_url,
+                messages=messages,
+                context=conversation.context,
+                tables=str(tables),
+            )
 
-        messages_ordered = (
-            await Message.filter(conversation_id=conversation_id)
-            .order_by("created_at")
-            .all()
-        )
-        messages = [message.content for message in messages_ordered]
+            response = agent.run(message=transcription)
 
-        await Message.create(
-            content={"role": "user", "content": transcription},
-            user_id=user_id,
-            conversation_id=conversation_id,
-        )
+            tts_service = TTSService()
+            audio_bytes = await tts_service.synthesize(response)
+            url = storage_service.save_bytes(
+                bucket_name=f"conversation-{conversation_id}",
+                file_bytes=audio_bytes,
+                file_extension="mp3",
+            )
 
-        connection_url = Encrypt.decrypt(connection.encrypted_url)
-        tables = DatabaseService.get_tables(connection_url)
+            await Message.create(
+                content={"role": "assistant", "content": response},
+                user_id=user_id,
+                conversation_id=conversation_id,
+            )
 
-        agent = Agent(
-            model=conversation.model,
-            connection_url=connection_url,
-            messages=messages,
-            context=conversation.context,
-            tables=str(tables),
-        )
-
-        response = agent.run(message=transcription)
-
-        await Message.create(
-            content={"role": "assistant", "content": response},
-            user_id=user_id,
-            conversation_id=conversation_id,
-        )
-
-        return SendMessageAudioResponse(url=url)
+            return SendMessageAudioResponse(url=url)
+        except Exception as e:
+            raise e
 
     async def get_messages(self, conversation_id: str) -> GetMessagesResponse:
         """
