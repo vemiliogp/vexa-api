@@ -1,4 +1,4 @@
-"""Connection routes module."""
+"""Insight routes module."""
 
 from fastapi import APIRouter, Depends
 

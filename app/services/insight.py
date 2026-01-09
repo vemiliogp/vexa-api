@@ -1,4 +1,4 @@
-"""Auth service module."""
+"""Insight service module."""
 
 from dataclasses import dataclass
 
