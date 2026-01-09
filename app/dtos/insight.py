@@ -22,7 +22,6 @@ class CreateInsightsRequest(BaseModel):
 class CreateInsightsResponse(BaseModel):
     """Response returned by the create insight endpoint."""
 
-    data: list[InsightData] = Field(default_factory=list)
     message: str = "Insights created successfully"
 
 

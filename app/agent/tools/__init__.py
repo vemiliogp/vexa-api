@@ -35,4 +35,25 @@ tools = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "save_insight",
+            "description": "Save an insight to the database.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "The title of the insight.",
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "The description of the insight.",
+                    },
+                },
+                "required": ["title", "description"],
+            },
+        },
+    },
 ]

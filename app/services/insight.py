@@ -52,7 +52,7 @@ class InsightService:
 
             print("Agent Response:", response)
 
-            return response
+            return CreateInsightsResponse()
         except Exception as e:
             raise e
 
