@@ -11,6 +11,7 @@ from app.dtos.conversation import (
 )
 from app.dtos.message import (
     GetMessagesResponse,
+    SendMessageAudioResponse,
     SendMessageRequest,
     SendMessageResponse,
 )
@@ -58,7 +59,9 @@ class ConversationController:
         except Exception as e:
             raise e
 
-    async def send_audio_message(self, file: File, user_id: str, conversation_id: str):
+    async def send_audio_message(
+        self, file: File, user_id: str, conversation_id: str
+    ) -> SendMessageAudioResponse:
         """
         Send an audio message in a conversation.
         """

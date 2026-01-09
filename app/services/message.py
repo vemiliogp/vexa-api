@@ -9,6 +9,7 @@ from app.agent.agent import Agent
 from app.dtos.message import (
     GetMessagesResponse,
     MessageData,
+    SendMessageAudioResponse,
     SendMessageRequest,
     SendMessageResponse,
 )
@@ -100,7 +101,9 @@ class MessageService:
         transcription = transcription_result["transcription"]
 
         storage_service = StorageService()
-        url = storage_service.save_file(bucket_name=f"conversation-{conversation_id}", file=file)
+        url = storage_service.save_file(
+            bucket_name=f"conversation-{conversation_id}", file=file
+        )
 
         messages_ordered = (
             await Message.filter(conversation_id=conversation_id)
@@ -134,7 +137,7 @@ class MessageService:
             conversation_id=conversation_id,
         )
 
-        return SendMessageResponse(response=url)
+        return SendMessageAudioResponse(url=url)
 
     async def get_messages(self, conversation_id: str) -> GetMessagesResponse:
         """

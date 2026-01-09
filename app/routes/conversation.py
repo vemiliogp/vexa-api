@@ -10,6 +10,7 @@ from app.dtos.conversation import (
 )
 from app.dtos.message import (
     GetMessagesResponse,
+    SendMessageAudioResponse,
     SendMessageRequest,
     SendMessageResponse,
 )
@@ -58,7 +59,11 @@ async def send_message(
     )
 
 
-@router.post("/{conversation_id}/message/audio", status_code=200)
+@router.post(
+    "/{conversation_id}/message/audio",
+    response_model=SendMessageAudioResponse,
+    status_code=200,
+)
 async def send_audio_message(
     conversation_id: str,
     file: UploadFile = File(...),
