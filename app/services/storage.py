@@ -6,6 +6,7 @@ from os import getenv
 
 from boto3 import client
 from botocore.client import Config
+from fastapi.datastructures import UploadFile
 
 
 @dataclass
@@ -21,7 +22,7 @@ class StorageService:
         region_name="us-east-1",
     )
 
-    def save_file(self, bucket_name: str, object_name: str) -> dict:
+    def save_file(self, bucket_name: str, file: UploadFile) -> str:
         """
         Save a file to the specified bucket.
         """
@@ -31,9 +32,10 @@ class StorageService:
             info(f"Bucket {bucket_name} may already exist: {e}")
 
         try:
-            self.s3.put_object(
-                Bucket=bucket_name, Key=object_name, Body="Hello from Caracas!"
-            )
+            object_name = file.filename
+            file_content = file.file.read()
+
+            self.s3.put_object(Bucket=bucket_name, Key=object_name, Body=file_content)
         except Exception as e:
             raise e
 
@@ -44,9 +46,7 @@ class StorageService:
                 ExpiresIn=3600,
             )
 
-            return {
-                "url": presigned_url,
-            }
+            return presigned_url
         except Exception as e:
             info(f"Failed to generate presigned URL: {e}")
             raise e

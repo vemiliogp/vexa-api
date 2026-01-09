@@ -2,7 +2,8 @@
 
 from dataclasses import dataclass
 
-from fastapi import File, HTTPException, status
+from fastapi import HTTPException, status
+from fastapi.datastructures import UploadFile
 
 from app.agent.agent import Agent
 from app.dtos.message import (
@@ -15,6 +16,7 @@ from app.models.connection import Connection
 from app.models.conversation import Conversation
 from app.models.message import Message
 from app.services.database import DatabaseService
+from app.services.storage import StorageService
 from app.services.transcription import TranscriptionService
 from app.utils.encrypt import Encrypt
 
@@ -76,7 +78,7 @@ class MessageService:
         return SendMessageResponse(response=response)
 
     async def send_audio_message(
-        self, file: File, user_id: str, conversation_id: str
+        self, file: UploadFile, user_id: str, conversation_id: str
     ) -> SendMessageResponse:
         """
         Send an audio message in a conversation.
@@ -92,10 +94,13 @@ class MessageService:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Connection not found"
             )
+
         transcription_service = TranscriptionService(model="tiny")
         transcription_result = await transcription_service.transcribe(file)
-
         transcription = transcription_result["transcription"]
+
+        storage_service = StorageService()
+        url = storage_service.save_file(bucket_name=f"conversation-{conversation_id}", file=file)
 
         messages_ordered = (
             await Message.filter(conversation_id=conversation_id)
@@ -129,7 +134,7 @@ class MessageService:
             conversation_id=conversation_id,
         )
 
-        return SendMessageResponse(response=response)
+        return SendMessageResponse(response=url)
 
     async def get_messages(self, conversation_id: str) -> GetMessagesResponse:
         """
