@@ -144,8 +144,6 @@ class AgentInsight:
             message = response.choices[0].message
             tool_calls = message.tool_calls or []
 
-            print(message)
-
             messages.append(message.model_dump())
 
             if tool_calls:

@@ -48,9 +48,7 @@ class InsightService:
                 tables=str(tables),
             )
 
-            response = agent.run(num_insights=payload.count)
-
-            print("Agent Response:", response)
+            agent.run(num_insights=payload.count)
 
             return CreateInsightsResponse()
         except Exception as e:

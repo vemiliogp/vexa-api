@@ -4,13 +4,14 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from app.config.database import setup_database
+from app.config.lifespan import lifespan
 from app.config.middlewares import setup_middlewares
 from app.exceptions import register_exception_handlers
 from app.routes import register_routes
 
 load_dotenv()
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 setup_middlewares(app)
 register_routes(app)
