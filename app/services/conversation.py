@@ -44,6 +44,7 @@ class ConversationService:
                 context=conversation.context,
                 connection_id=conversation.connection_id,
                 model=conversation.model,
+                created_at=str(conversation.created_at)
             )
 
             return CreateConversationResponse(data=data)
@@ -62,6 +63,7 @@ class ConversationService:
                     title=conversation.title,
                     context=conversation.context,
                     model=conversation.model,
+                    created_at=str(conversation.created_at),
                 )
                 for conversation in conversations
             ]

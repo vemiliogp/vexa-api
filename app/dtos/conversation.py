@@ -13,6 +13,7 @@ class ConversationData(BaseModel):
     context: str | None = None
     model: ModelEnum
     connection_id: int | None = None
+    created_at: str
 
 
 class CreateConversationRequest(BaseModel):
