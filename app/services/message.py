@@ -17,6 +17,7 @@ from app.models.connection import Connection
 from app.models.conversation import Conversation
 from app.models.message import Message
 from app.services.database import DatabaseService
+from app.services.llm import LLMService
 from app.services.storage import StorageService
 from app.services.transcription import TranscriptionService
 from app.services.tts import TTSService
@@ -78,6 +79,15 @@ class MessageService:
                 user_id=user_id,
                 conversation_id=conversation_id,
             )
+
+            if not conversation.title:
+                title = await LLMService.generate(
+                    "Genera un título conciso y descriptivo para la siguiente conversación, en menos de 50 caracteres y sin ningun tipo de formato, solo el titulo: "
+                    + payload.message,
+                    conversation.model,
+                )
+                conversation.title = title
+                await conversation.save()
 
             return SendMessageResponse(response=response)
         except Exception as e:

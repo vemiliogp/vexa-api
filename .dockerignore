@@ -32,5 +32,6 @@
 **/uv.lock
 **/postgresql
 **/minio
+**/mlflow.db
 LICENSE
 README.md
