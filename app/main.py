@@ -1,9 +1,8 @@
 """Main entry point for the application."""
 
+import mlflow
 from dotenv import load_dotenv
 from fastapi import FastAPI
-
-import mlflow
 
 mlflow.litellm.autolog()
 

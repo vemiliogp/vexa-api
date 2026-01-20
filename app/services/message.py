@@ -86,7 +86,7 @@ class MessageService:
                     + payload.message,
                     conversation.model,
                 )
-                conversation.title = title
+                conversation.title = title.capitalize()
                 await conversation.save()
 
             return SendMessageResponse(response=response)
