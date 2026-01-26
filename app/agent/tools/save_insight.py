@@ -7,10 +7,13 @@ from psycopg import connect
 
 
 def save_insight(
-    connection_id: int, user_id: str, title: str, description: str,
+    connection_id: int,
+    user_id: str,
+    title: str,
+    description: str,
 ) -> list:
     """Run a SQL query against the database."""
-    connection_url = getenv("DATABASE_URL")
+    connection_url = getenv("DB_URL")
 
     try:
         with connect(connection_url) as conn:

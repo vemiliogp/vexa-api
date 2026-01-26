@@ -1,10 +1,7 @@
 """Main entry point for the application."""
 
-import mlflow
 from dotenv import load_dotenv
 from fastapi import FastAPI
-
-mlflow.litellm.autolog()
 
 from app.config.database import setup_database
 from app.config.lifespan import lifespan
