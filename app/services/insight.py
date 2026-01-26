@@ -4,7 +4,8 @@ from dataclasses import dataclass
 
 from fastapi import HTTPException, status
 
-from app.agent.agent_insight import AgentInsight
+from app.agent.agent import Agent
+from app.agent.prompts.agent_insight_prompt import get_agent_insight_prompt
 from app.dtos.insight import (
     CreateInsightsRequest,
     CreateInsightsResponse,
@@ -41,14 +42,21 @@ class InsightService:
 
             tables = DatabaseService.get_tables(connection_url)
 
-            agent = AgentInsight(
-                model="deepseek/r1",
-                connection_url=connection_url,
-                context=payload.context,
+            system_prompt = get_agent_insight_prompt(
                 tables=str(tables),
+                context=payload.context,
+                num_insights=payload.count,
             )
 
-            agent.run(num_insights=payload.count)
+            agent = Agent(
+                model="deepseek/r1",
+                connection_url=connection_url,
+                system_prompt=system_prompt,
+                user_id=int(user_id),
+                connection_id=connection.id,
+            )
+
+            agent.run()
 
             return CreateInsightsResponse()
         except Exception as e:

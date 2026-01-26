@@ -44,7 +44,7 @@ class ConversationService:
                 context=conversation.context,
                 connection_id=conversation.connection_id,
                 model=conversation.model,
-                created_at=str(conversation.created_at)
+                created_at=str(conversation.created_at),
             )
 
             return CreateConversationResponse(data=data)

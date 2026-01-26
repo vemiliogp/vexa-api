@@ -6,6 +6,7 @@ from fastapi import HTTPException, status
 from fastapi.datastructures import UploadFile
 
 from app.agent.agent import Agent
+from app.agent.prompts.agent_prompt import get_default_agent_prompt
 from app.dtos.message import (
     GetMessagesResponse,
     MessageData,
@@ -64,15 +65,19 @@ class MessageService:
             connection_url = Encrypt.decrypt(connection.encrypted_url)
             tables = DatabaseService.get_tables(connection_url)
 
+            system_prompt = get_default_agent_prompt(
+                tables=str(tables),
+                context=conversation.context,
+            )
+
             agent = Agent(
                 model=conversation.model,
                 connection_url=connection_url,
+                system_prompt=system_prompt,
                 messages=messages,
-                context=conversation.context,
-                tables=str(tables),
             )
 
-            response = agent.run(message=payload.message)
+            response = agent.run(user_message=payload.message)
 
             await Message.create(
                 content={"role": "assistant", "content": response},
@@ -138,15 +143,19 @@ class MessageService:
             connection_url = Encrypt.decrypt(connection.encrypted_url)
             tables = DatabaseService.get_tables(connection_url)
 
+            system_prompt = get_default_agent_prompt(
+                tables=str(tables),
+                context=conversation.context,
+            )
+
             agent = Agent(
                 model=conversation.model,
                 connection_url=connection_url,
+                system_prompt=system_prompt,
                 messages=messages,
-                context=conversation.context,
-                tables=str(tables),
             )
 
-            response = agent.run(message=transcription)
+            response = agent.run(user_message=transcription)
 
             tts_service = TTSService()
             audio_bytes = await tts_service.synthesize(response)

@@ -7,16 +7,17 @@ from psycopg import connect
 
 
 def save_insight(
-    connection_url: str, user_id: str, title: str, description: str
+    connection_id: int, user_id: str, title: str, description: str,
 ) -> list:
     """Run a SQL query against the database."""
+    connection_url = getenv("DATABASE_URL")
 
     try:
-        with connect(getenv("DATABASE_URL")) as conn:
+        with connect(connection_url) as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     "INSERT INTO insight (user_id, title, description, connection_id) VALUES (%s, %s, %s, %s) RETURNING id;",
-                    (1, title, description, 1),
+                    (user_id, title, description, connection_id),
                 )
                 rows = cur.fetchall()
 
