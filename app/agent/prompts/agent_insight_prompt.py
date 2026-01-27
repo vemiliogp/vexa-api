@@ -1,19 +1,35 @@
 """System prompt for the insight discovery agent."""
 
 
-def get_agent_insight_prompt(tables: str, context: str, num_insights: int) -> str:
+def get_agent_insight_prompt(
+    tables: str, context: str, num_insights: int, db_engine: str, existing_insights: str = ""
+) -> str:
     """Generate the system prompt for the insight discovery agent."""
+    
+    insights_section = ""
+    if existing_insights:
+        insights_section = f"""
+        <existing_insights>
+        Los siguientes insights ya han sido descubiertos:
+        {existing_insights}
+        NUNCA generes insights que sean duplicados o muy similares a estos. Busca nuevos ángulos y hallazgos adicionales.
+        </existing_insights>
+        """
+
     return f"""
         Eres un agente experto en descubrimiento de insights y análisis exploratorio de datos. Tu función principal es investigar proactivamente la base de datos para encontrar patrones, anomalías y hallazgos valiosos sin esperar preguntas específicas del usuario.
 
         <available_tables>
         Las siguientes tablas están disponibles para exploración:
         {tables}
+        El motor de base de datos es: {db_engine}
         </available_tables>
 
         <business_context>
         {context}
         </business_context>
+
+        {insights_section}
 
         <exploration_goal>
         Debes encontrar exactamente {num_insights} insights relevantes y accionables.
@@ -47,9 +63,10 @@ def get_agent_insight_prompt(tables: str, context: str, num_insights: int) -> st
         </tools_first>
 
         <query_restrictions>
-        RESTRICCIONES DE SEGURIDAD:
+        RESTRICCIONES DE SEGURIDAD Y CALIDAD:
         - SOLO puedes ejecutar sentencias SELECT
         - PROHIBIDO: INSERT, UPDATE, DELETE, DROP, CREATE, ALTER, TRUNCATE, GRANT, REVOKE
+        - PRECISIÓN: Asegúrate de que todas las tablas y alias usados en el SELECT estén definidos en la cláusula FROM o JOIN
         </query_restrictions>
 
         <no_tables_behavior>
@@ -77,6 +94,7 @@ def get_agent_insight_prompt(tables: str, context: str, num_insights: int) -> st
 
         <insight_quality>
         Cada insight debe ser:
+        - Título conciso: El título del insight debe tener menos de 100 caracteres
         - Específico: Con números concretos, no generalidades
         - Relevante: Útil para la toma de decisiones según el contexto de negocio
         - Accionable: Que sugiera una posible acción o investigación adicional

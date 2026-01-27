@@ -11,8 +11,8 @@ class Insight(Model):
     """Insight model representing an insight in the system."""
 
     id = fields.IntField(pk=True)
-    title = fields.CharField(max_length=50, null=True)
-    description = fields.TextField(null=True)
+    title = fields.CharField(max_length=100)
+    description = fields.TextField()
 
     user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
         "models.User", related_name="insights", on_delete=fields.CASCADE

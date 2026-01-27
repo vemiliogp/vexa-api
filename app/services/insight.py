@@ -42,10 +42,22 @@ class InsightService:
 
             tables = DatabaseService.get_tables(connection_url)
 
+            existing_insights_list = await Insight.filter(
+                user_id=user_id, connection_id=connection.id
+            ).all()
+            existing_insights_text = "\n".join(
+                [
+                    f"- Título: {i.title}. Descripción: {i.description[:200]}..."
+                    for i in existing_insights_list
+                ]
+            )
+
             system_prompt = get_agent_insight_prompt(
                 tables=str(tables),
                 context=payload.context,
                 num_insights=payload.count,
+                db_engine=connection.engine,
+                existing_insights=existing_insights_text,
             )
 
             agent = Agent(
