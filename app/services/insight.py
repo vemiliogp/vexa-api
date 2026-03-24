@@ -81,7 +81,9 @@ class InsightService:
         Get all insights for a user.
         """
         try:
-            insights = await Insight.filter(user_id=user_id).order_by("-created_at").all()
+            insights = (
+                await Insight.filter(user_id=user_id).order_by("-created_at").all()
+            )
             data = [
                 InsightData(
                     id=insight.id,

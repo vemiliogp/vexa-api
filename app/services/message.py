@@ -147,7 +147,7 @@ class MessageService:
             system_prompt = get_default_agent_prompt(
                 tables=str(tables),
                 context=conversation.context,
-                db_engine=connection.engine
+                db_engine=connection.engine,
             )
 
             agent = Agent(

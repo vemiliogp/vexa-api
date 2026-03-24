@@ -2,10 +2,14 @@
 
 
 def get_agent_insight_prompt(
-    tables: str, context: str, num_insights: int, db_engine: str, existing_insights: str = ""
+    tables: str,
+    context: str,
+    num_insights: int,
+    db_engine: str,
+    existing_insights: str = "",
 ) -> str:
     """Generate the system prompt for the insight discovery agent."""
-    
+
     insights_section = ""
     if existing_insights:
         insights_section = f"""
