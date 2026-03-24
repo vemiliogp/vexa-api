@@ -1,5 +1,7 @@
 """DTOs for insight endpoints."""
 
+from datetime import datetime
+
 from pydantic import BaseModel, Field
 
 
@@ -9,6 +11,7 @@ class InsightData(BaseModel):
     id: int
     title: str | None = None
     description: str | None = None
+    created_at: datetime | None = None
 
 
 class CreateInsightsRequest(BaseModel):

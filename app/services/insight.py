@@ -1,5 +1,6 @@
 """Insight service module."""
 
+import asyncio
 from dataclasses import dataclass
 
 from fastapi import HTTPException, status
@@ -68,7 +69,8 @@ class InsightService:
                 connection_id=connection.id,
             )
 
-            agent.run()
+            loop = asyncio.get_event_loop()
+            await loop.run_in_executor(None, agent.run)
 
             return CreateInsightsResponse()
         except Exception as e:
@@ -79,12 +81,13 @@ class InsightService:
         Get all insights for a user.
         """
         try:
-            insights = await Insight.filter(user_id=user_id).all()
+            insights = await Insight.filter(user_id=user_id).order_by("-created_at").all()
             data = [
                 InsightData(
                     id=insight.id,
                     title=insight.title,
                     description=insight.description,
+                    created_at=insight.created_at,
                 )
                 for insight in insights
             ]
