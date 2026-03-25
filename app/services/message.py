@@ -191,6 +191,7 @@ class MessageService:
                 MessageData(
                     id=message.id,
                     content=message.content,
+                    created_at=str(message.created_at),
                 )
                 for message in messages
             ]

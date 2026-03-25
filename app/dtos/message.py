@@ -8,6 +8,7 @@ class MessageData(BaseModel):
 
     id: int
     content: dict
+    created_at: str
 
 
 class GetMessagesResponse(BaseModel):
