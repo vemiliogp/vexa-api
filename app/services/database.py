@@ -6,6 +6,8 @@ from typing import List, Optional
 
 from psycopg import connect
 
+from app.utils.connection_url import normalize_connection_url
+
 
 @dataclass
 class DatabaseService:
@@ -17,7 +19,7 @@ class DatabaseService:
         Retrieve all table names from the database.
         """
         try:
-            with connect(connection_url) as conn:
+            with connect(normalize_connection_url(connection_url)) as conn:
                 with conn.cursor() as cur:
                     cur.execute(
                         """
@@ -40,7 +42,7 @@ class DatabaseService:
         Check if the database connection is successful.
         """
         try:
-            with connect(connection_url) as conn:
+            with connect(normalize_connection_url(connection_url)) as conn:
                 with conn.cursor() as cur:
                     cur.execute("SELECT 1")
                     return True

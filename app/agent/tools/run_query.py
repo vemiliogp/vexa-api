@@ -4,12 +4,14 @@ from logging import error
 
 from psycopg import connect
 
+from app.utils.connection_url import normalize_connection_url
+
 
 def run_query(connection_url: str, query: str) -> list:
     """Run a SQL query against the database."""
 
     try:
-        with connect(connection_url) as conn:
+        with connect(normalize_connection_url(connection_url)) as conn:
             with conn.cursor() as cur:
                 cur.execute(query)
                 rows = cur.fetchall()

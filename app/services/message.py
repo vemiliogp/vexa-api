@@ -1,5 +1,6 @@
 """Message service module."""
 
+import asyncio
 from dataclasses import dataclass
 
 from fastapi import HTTPException, status
@@ -78,7 +79,10 @@ class MessageService:
                 messages=messages,
             )
 
-            response = agent.run(user_message=payload.message)
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(
+                None, lambda: agent.run(user_message=payload.message)
+            )
 
             await Message.create(
                 content={"role": "assistant", "content": response},
@@ -121,7 +125,17 @@ class MessageService:
 
             transcription_service = TranscriptionService(model="tiny")
             transcription_result = await transcription_service.transcribe(file)
-            transcription = transcription_result["transcription"]
+            raw_transcription = transcription_result["transcription"]
+            try:
+                transcription = await LLMService.generate(
+                    "Corrige errores evidentes de transcripcion de audio en el siguiente texto. "
+                    "Mantén el significado y la intencion originales. "
+                    "Devuelve unicamente el texto corregido, sin explicaciones ni comentarios.\n\n"
+                    + raw_transcription,
+                    conversation.model,
+                )
+            except Exception:
+                transcription = raw_transcription
 
             storage_service = StorageService()
             storage_service.save_file(
@@ -157,7 +171,10 @@ class MessageService:
                 messages=messages,
             )
 
-            response = agent.run(user_message=transcription)
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(
+                None, lambda: agent.run(user_message=transcription)
+            )
 
             tts_service = TTSService()
             audio_bytes = await tts_service.synthesize(response)

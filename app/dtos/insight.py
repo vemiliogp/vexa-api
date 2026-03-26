@@ -1,8 +1,16 @@
 """DTOs for insight endpoints."""
 
 from datetime import datetime
+from enum import Enum
 
 from pydantic import BaseModel, Field
+
+
+class DeliveryMethod(str, Enum):
+    """Delivery method for insights."""
+
+    EMAIL = "email"
+    IN_APP = "in_app"
 
 
 class InsightData(BaseModel):
@@ -12,6 +20,8 @@ class InsightData(BaseModel):
     title: str | None = None
     description: str | None = None
     created_at: datetime | None = None
+    connection_id: int | None = None
+    connection_name: str | None = None
 
 
 class CreateInsightsRequest(BaseModel):
@@ -20,6 +30,7 @@ class CreateInsightsRequest(BaseModel):
     context: str | None = Field(default=None)
     count: int = Field(default=1, ge=1, le=5)
     connection_id: int | None = Field(default=None)
+    delivery_method: DeliveryMethod = Field(default=DeliveryMethod.IN_APP)
 
 
 class CreateInsightsResponse(BaseModel):

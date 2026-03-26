@@ -4,6 +4,8 @@ from logging import error
 
 from psycopg import connect
 
+from app.utils.connection_url import normalize_connection_url
+
 
 def describe_table(connection_url: str, table_name: str) -> list:
     """Describe the structure of a database table."""
@@ -28,7 +30,7 @@ def describe_table(connection_url: str, table_name: str) -> list:
     """
 
     try:
-        with connect(connection_url) as conn:
+        with connect(normalize_connection_url(connection_url)) as conn:
             with conn.cursor() as cur:
                 cur.execute(query, (table_name,))
                 return cur.fetchall()

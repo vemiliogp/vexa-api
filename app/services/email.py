@@ -46,7 +46,7 @@ class EmailService:
             mail_from=self.smtp_config["user"],
         )
 
-        for att in options.attachments:
+        for att in (options.attachments or []):
             with open(att.path, "rb") as f:
                 message.attach(
                     filename=att.filename,

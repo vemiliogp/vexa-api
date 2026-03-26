@@ -1,9 +1,12 @@
 """Insight service module."""
 
 import asyncio
+import logging
 from dataclasses import dataclass
 
 from fastapi import HTTPException, status
+
+logger = logging.getLogger(__name__)
 
 from app.agent.agent import Agent
 from app.agent.prompts.agent_insight_prompt import get_agent_insight_prompt
@@ -82,7 +85,10 @@ class InsightService:
         """
         try:
             insights = (
-                await Insight.filter(user_id=user_id).order_by("-created_at").all()
+                await Insight.filter(user_id=user_id)
+                .order_by("-created_at")
+                .select_related("connection")
+                .all()
             )
             data = [
                 InsightData(
@@ -90,6 +96,8 @@ class InsightService:
                     title=insight.title,
                     description=insight.description,
                     created_at=insight.created_at,
+                    connection_id=insight.connection_id,
+                    connection_name=insight.connection.name if insight.connection else None,
                 )
                 for insight in insights
             ]

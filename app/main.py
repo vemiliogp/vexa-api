@@ -1,5 +1,6 @@
 """Main entry point for the application."""
 
+import mlflow
 from dotenv import load_dotenv
 from fastapi import FastAPI
 
@@ -10,6 +11,7 @@ from app.exceptions import register_exception_handlers
 from app.routes import register_routes
 
 load_dotenv()
+mlflow.litellm.autolog()
 
 app = FastAPI(lifespan=lifespan)
 
