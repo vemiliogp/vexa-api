@@ -64,7 +64,7 @@ class MessageService:
             )
 
             connection_url = Encrypt.decrypt(connection.encrypted_url)
-            tables = DatabaseService.get_tables(connection_url)
+            tables = DatabaseService.get_tables_with_columns(connection_url)
 
             system_prompt = get_default_agent_prompt(
                 tables=str(tables),
@@ -99,7 +99,7 @@ class MessageService:
                 conversation.title = title.capitalize()
                 await conversation.save()
 
-            return SendMessageResponse(response=response)
+            return SendMessageResponse(response=response, user_message=payload.message)
         except Exception as e:
             raise e
 
@@ -156,7 +156,7 @@ class MessageService:
             )
 
             connection_url = Encrypt.decrypt(connection.encrypted_url)
-            tables = DatabaseService.get_tables(connection_url)
+            tables = DatabaseService.get_tables_with_columns(connection_url)
 
             system_prompt = get_default_agent_prompt(
                 tables=str(tables),
@@ -190,7 +190,7 @@ class MessageService:
                 conversation_id=conversation_id,
             )
 
-            return SendMessageAudioResponse(url=url)
+            return SendMessageAudioResponse(url=url, user_message=transcription)
         except Exception as e:
             raise e
 

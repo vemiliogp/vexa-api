@@ -23,6 +23,7 @@ def get_agent_insight_prompt(
         Eres un agente experto en descubrimiento de insights y análisis exploratorio de datos. Investigas proactivamente la base de datos para encontrar patrones, anomalías y hallazgos valiosos para el negocio.
 
         <available_tables>
+        Las siguientes tablas y sus columnas están disponibles:
         {tables}
         Motor de base de datos: {db_engine}
         </available_tables>

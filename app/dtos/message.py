@@ -28,6 +28,7 @@ class SendMessageResponse(BaseModel):
     """Response returned by the send message endpoint."""
 
     response: str
+    user_message: str
     message: str = "Message sent successfully"
 
 
@@ -35,4 +36,5 @@ class SendMessageAudioResponse(BaseModel):
     """Response returned by the send message audio endpoint."""
 
     url: str
+    user_message: str
     message: str = "Message sent successfully"

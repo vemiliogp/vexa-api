@@ -72,7 +72,7 @@ class InsightService:
 
             connection_url = Encrypt.decrypt(connection.encrypted_url)
 
-            tables = DatabaseService.get_tables(connection_url)
+            tables = DatabaseService.get_tables_with_columns(connection_url)
 
             existing_insights_list = await Insight.filter(
                 user_id=user_id, connection_id=connection.id

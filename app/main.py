@@ -1,7 +1,10 @@
 """Main entry point for the application."""
 
-import mlflow
 from dotenv import load_dotenv
+
+load_dotenv()
+
+import mlflow
 from fastapi import FastAPI
 
 from app.config.database import setup_database
@@ -10,7 +13,7 @@ from app.config.middlewares import setup_middlewares
 from app.exceptions import register_exception_handlers
 from app.routes import register_routes
 
-load_dotenv()
+mlflow.set_experiment("Vexa")
 mlflow.litellm.autolog()
 
 app = FastAPI(lifespan=lifespan)

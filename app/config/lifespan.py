@@ -27,7 +27,7 @@ async def generate_insights():
             for connection in connections:
                 try:
                     connection_url = Encrypt.decrypt(connection.encrypted_url)
-                    tables = DatabaseService.get_tables(connection_url)
+                    tables = DatabaseService.get_tables_with_columns(connection_url)
 
                     if not tables:
                         logger.info(

@@ -11,7 +11,7 @@ def get_default_agent_prompt(tables: str, context: str, db_engine: str) -> str:
         </identity>
 
         <available_tables>
-        Las siguientes tablas están disponibles:
+        Las siguientes tablas y sus columnas están disponibles:
         {tables}
         Motor de base de datos: {db_engine}
         </available_tables>

@@ -23,9 +23,9 @@ class DatabaseService:
                 with conn.cursor() as cur:
                     cur.execute(
                         """
-                        SELECT table_name 
-                        FROM information_schema.tables 
-                        WHERE table_schema = 'public' 
+                        SELECT table_name
+                        FROM information_schema.tables
+                        WHERE table_schema = 'public'
                         AND table_type = 'BASE TABLE'
                         ORDER BY table_name;
                     """
@@ -35,6 +35,39 @@ class DatabaseService:
                     return tables
         except Exception as e:
             error(f"Failed to retrieve tables: {e}")
+            return None
+
+    @staticmethod
+    def get_tables_with_columns(connection_url: str) -> Optional[List[str]]:
+        """
+        Retrieve table names with their columns in the format: table (col1, col2, ...).
+        """
+        try:
+            with connect(normalize_connection_url(connection_url)) as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        SELECT t.table_name, c.column_name
+                        FROM information_schema.tables t
+                        JOIN information_schema.columns c
+                            ON t.table_name = c.table_name
+                            AND t.table_schema = c.table_schema
+                        WHERE t.table_schema = 'public'
+                        AND t.table_type = 'BASE TABLE'
+                        ORDER BY t.table_name, c.ordinal_position;
+                    """
+                    )
+                    rows = cur.fetchall()
+                    tables: dict = {}
+                    for table_name, column_name in rows:
+                        tables.setdefault(table_name, []).append(column_name)
+                    result = [
+                        f"{table} ({', '.join(cols)})" for table, cols in tables.items()
+                    ]
+                    info(f"Retrieved {len(result)} tables with columns from database")
+                    return result
+        except Exception as e:
+            error(f"Failed to retrieve tables with columns: {e}")
             return None
 
     def check_connection(self, connection_url: str) -> bool:
