@@ -1,6 +1,7 @@
 """Email service module."""
 
 from dataclasses import dataclass
+from logging import error, info
 from os import getenv
 
 from emails import html
@@ -30,8 +31,8 @@ class EmailService:
 
     smtp_config = {
         "host": getenv("MAILER_HOST"),
-        "port": int(getenv("MAILER_PORT", "465")),
-        "ssl": getenv("MAILER_SSL", "True") == "True",
+        "port": int(getenv("MAILER_PORT", "587")),
+        "tls": getenv("MAILER_TLS", "True") == "True",
         "user": getenv("MAILER_USER"),
         "password": getenv("MAILER_PASSWORD"),
     }
@@ -56,10 +57,17 @@ class EmailService:
                 )
 
         try:
-            message.send(
+            response = message.send(
                 to=options.to,
                 smtp=self.smtp_config,
             )
-            return True
+
+            if response.status_code == 250:
+                info(f"Email sent successfully to {options.to}")
+                return True
+
+            error(f"Error SMTP: {response.status_code} - {response.error}")
+            return False
+
         except Exception as e:
             raise e

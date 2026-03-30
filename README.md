@@ -1,32 +1,33 @@
-# Vexa REST API
+# REST API
 
-Backend service built with **Python 3.12**, **FastAPI**, and **Tortoise ORM**. The application exposes endpoints, persists data in PostgreSQL, and ships with Docker assets for local development.
+Servicio backend construido con **Python 3.12**, **FastAPI** y **Tortoise ORM**. Expone endpoints para autenticación, conversaciones, conexiones, insights y un agente de IA con herramientas (tool-calling). Incluye speech-to-text (Whisper), text-to-speech (Edge TTS), almacenamiento de objetos (MinIO) y seguimiento de experimentos (MLflow).
 
-## Requirements
+## Requisitos
 
 - [Python 3.12.12+](https://www.python.org/)
-- [uv](https://github.com/astral-sh/uv) (recommended) or pip 24+
-- [Docker](https://www.docker.com/) and Docker Compose (optional, for containers)
-- `openssl` (used to generate secure local secrets)
+- [uv](https://github.com/astral-sh/uv) (recomendado) o pip 24+
+- [Docker](https://www.docker.com/) y Docker Compose
+- [Ollama](https://ollama.com/) (necesario para el modelo LLM local)
+- `openssl` (para generar secrets seguros)
 
-## Installation
+## Instalación
 
-1. **Clone the repository**
+1. **Clonar el repositorio:**
 
    ```bash
    git clone https://github.com/vemiliogp/vexa-api.git
    cd vexa-api
    ```
 
-2. **Install dependencies**
+2. **Instalar dependencias:**
 
-   Using **uv** (preferred):
+   Con **uv** (recomendado):
 
    ```bash
    uv sync
    ```
 
-   Or with `pip` inside a virtual environment:
+   O con `pip` dentro de un entorno virtual:
 
    ```bash
    python -m venv .venv
@@ -34,97 +35,133 @@ Backend service built with **Python 3.12**, **FastAPI**, and **Tortoise ORM**. T
    pip install -r requirements.txt
    ```
 
-3. **Create the `.env` file**
-
-   Define the database connection string used by Tortoise ORM and the credentials consumed by Docker Compose:
+3. **Configurar variables de entorno:**
 
    ```bash
-   cat <<'EOF' > .env
-   DB_URL=postgres://postgres:postgres@localhost:5432/vexa
-   DB_USER=postgres
-   DB_PASSWORD=postgres
-   DB_NAME=vexa
-   SESSION_SECRET=dev-secret
-   EOF
+   cp .env.example .env
    ```
 
-4. **Generate strong secrets**
+   Abrí el archivo `.env` y configurá las variables necesarias.
 
-   Update `DB_PASSWORD`, `SESSION_SECRET` (and any other sensitive value) with random data:
+4. **Generar secrets para las variables de entorno:**
+
+   Ejecutá el siguiente comando para generar secrets únicos:
 
    ```bash
    openssl rand -base64 32
    ```
 
-   Replace the placeholder values in `.env` with the generated secrets.
-
-5. **Synchronize Docker credentials**
-
-   Make sure the credentials you defined in `.env` match the `services.db.environment` block inside `compose.yaml`:
-
-   ```yaml
-   services:
-     db:
-       environment:
-         POSTGRES_USER: ${DB_USER}
-         POSTGRES_DB: ${DB_NAME}
-         POSTGRES_PASSWORD: ${DB_PASSWORD}
-   ```
-
-   This ensures the API and the PostgreSQL container stay in sync.
-
-6. **Start the local database (optional)**
+   Repetí según sea necesario para `DB_PASSWORD`, `SESSION_SECRET`, `ENCRYPT_SECRET` y `MINIO_ROOT_PASSWORD`. Por ejemplo:
 
    ```bash
-   docker compose up -d db
+   DB_PASSWORD=""
+   SESSION_SECRET=""
    ```
 
-   A local `postgresql/` directory is mounted as the container volume so your data persists between runs.
+5. **Configurar credenciales de Docker en `.env.docker`:**
 
-## Running the application
+   El archivo `.env.docker` contiene las credenciales que usan los contenedores de Docker Compose (PostgreSQL y MinIO). Crealo con las mismas credenciales que definiste en `.env`:
 
-### Local development server
+   ```bash
+   # Database configuration
+   DB_USER=vexa_user
+   DB_PASSWORD=<tu_db_password>
+   DB_NAME=vexa_db
+
+   # Storage service configuration
+   MINIO_ROOT_USER=vexa
+   MINIO_ROOT_PASSWORD=<tu_minio_password>
+   EOF
+   ```
+
+   Los valores de `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `MINIO_ROOT_USER` y `MINIO_ROOT_PASSWORD` deben coincidir con los de tu archivo `.env` para que la API pueda conectarse correctamente a los servicios.
+
+6. **Instalar y configurar Ollama:**
+
+   Instalá Ollama siguiendo las instrucciones en [ollama.com](https://ollama.com/) y descargá el modelo local:
+
+   ```bash
+   ollama pull gpt-oss:20b
+
+   Asegurate de que Ollama esté corriendo antes de iniciar la API si vas a usar el modelo `openai/gpt-oss`:
+
+   ```bash
+   ollama serve
+   ```
+
+7. **Iniciar los servicios de infraestructura:**
+
+   ```bash
+   docker compose up -d db storage
+   ```
+
+   Esto levanta PostgreSQL y MinIO. El directorio local `postgresql/` se monta como volumen para que los datos persistan entre ejecuciones. La consola de MinIO está disponible en `http://localhost:9001`.
+
+8. **Iniciar el servidor de MLflow:**
+
+   ```bash
+   uv run mlflow server --port 7500
+   ```
+
+   > **Importante:** El servidor de MLflow debe estar corriendo antes de iniciar la API. Sin él, la aplicación no arrancará porque intenta conectarse a MLflow al inicio.
+
+   Una vez levantado, la interfaz web de MLflow está disponible en `http://localhost:7500`. Asegurate de que la variable `MLFLOW_TRACKING_URI` en tu `.env` apunte a esta dirección.
+
+## Ejecución
+
+### Servidor de desarrollo local
 
 ```bash
-uv fastapi dev app/main.py
+uv run fastapi dev app/main.py
 ```
 
-This command loads environment variables from `.env`, creates the FastAPI app, and Tortoise automatically creates tables defined in `app.models` (`generate_schemas=True` in `app/main.py`).
+Este comando carga las variables de entorno desde `.env`, crea la app de FastAPI y Tortoise crea automáticamente las tablas definidas en `app.models`.
 
-### Docker Compose
+### Docker Compose (stack completo)
 
 ```bash
 docker compose up --build
 ```
 
-The `api` service uses the Dockerfile at the project root and connects to the `db` service defined in `compose.yaml`. Hot reload is handled by FastAPI inside the container when run in development mode.
+El servicio `api` usa el Dockerfile en la raíz del proyecto y se conecta a los servicios `db` y `storage` definidos en `compose.yaml`.
 
-## Available commands
+## Comandos disponibles
 
-- `uv run fastapi run app/main.py` – Run the API with auto-reload for development.
-- `uv run black .` – Format the source code with Black.
-- `uv run isort .` – Sort imports consistently across the project.
+- `uv run fastapi dev app/main.py` – Ejecutar la API en modo desarrollo con auto-reload.
+- `uv run fastapi run app/main.py` – Ejecutar la API en modo producción.
 
-## Project structure
+## Estructura del proyecto
 
 ```plaintext
-app/                         # FastAPI application package
-  main.py                    # Application entrypoint, FastAPI + Tortoise setup
-  controllers/               # HTTP controllers orchestrating services
-  dtos/                      # Models used for request/response bodies
-  models/                    # Tortoise ORM models (e.g., User)
-  routes/                    # APIRouter instances (auth, health)
-  services/                  # Business logic (auth, health)
-  utils/                     # Helper utilities such as password hashing
-compose.yaml                 # Docker Compose stack for the API and PostgreSQL
-Dockerfile                   # Multi-stage build for the FastAPI service
-postgresql/                  # Local volume to persist PostgreSQL data
-pyproject.toml               # Project metadata and runtime dependencies
-requirements.txt             # Locked dependency list exported by uv
-uv.lock                      # uv lockfile for reproducible installs
-README.md                    # Project documentation (this file)
+app/                         # Paquete de la aplicación FastAPI
+  main.py                    # Punto de entrada, configuración de FastAPI + Tortoise
+  agent/                     # Agente de IA con capacidades de tool-calling
+    agent.py                 # Implementación del loop del agente
+    prompts/                 # Prompts de sistema para el agente
+    tools/                   # Herramientas del agente (run_query, describe_table, save_insight)
+  config/                    # Configuración de la app (base de datos, middlewares, lifespan)
+  controllers/               # Controladores HTTP que orquestan los servicios
+  dtos/                      # Modelos para request/response bodies
+  exceptions/                # Manejo de errores y definiciones personalizadas
+  middlewares/               # Funciones middleware para procesamiento de requests
+  models/                    # Modelos Tortoise ORM (User, Connection, Conversation, Insight, Message)
+  routes/                    # Instancias de APIRouter (auth, health, connection, conversation, insight)
+  services/                  # Lógica de negocio (auth, LLM, transcripción, TTS, storage, email)
+  utils/                     # Utilidades auxiliares
+docs/                        # Documentación del proyecto
+  er-diagram.png             # Diagrama entidad-relación
+compose.yaml                 # Stack Docker Compose (API, PostgreSQL, MinIO)
+Dockerfile                   # Imagen de contenedor para el servicio FastAPI
+pyproject.toml               # Metadatos del proyecto y dependencias
+requirements.txt             # Lista de dependencias bloqueada exportada por uv
+uv.lock                      # Lockfile de uv para instalaciones reproducibles
+.env.example                 # Plantilla de variables de entorno
 ```
 
----
+## Documentación de la API
 
-FastAPI automatically generates interactive docs at `http://localhost:8000/docs` once the service is running. Use the `/health` endpoint to verify liveness and `/auth/register` to create users that are persisted via Tortoise ORM.
+FastAPI genera documentación interactiva automáticamente en `http://localhost:8000/docs` una vez que el servicio está corriendo. Usá el endpoint `/health` para verificar que la API esté activa.
+
+## Licencia
+
+Este proyecto está licenciado bajo los términos de la Licencia ISC.
