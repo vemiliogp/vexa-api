@@ -1,9 +1,8 @@
 """Message model definition."""
 
+from app.models.conversation import Conversation
 from tortoise import fields
 from tortoise.models import Model
-
-from app.models.conversation import Conversation
 
 
 class Message(Model):

@@ -3,9 +3,6 @@
 import asyncio
 from dataclasses import dataclass
 
-from fastapi import HTTPException, status
-from fastapi.datastructures import UploadFile
-
 from app.agent.agent import Agent
 from app.agent.prompts.agent_prompt import get_default_agent_prompt
 from app.dtos.message import (
@@ -24,6 +21,8 @@ from app.services.storage import StorageService
 from app.services.transcription import TranscriptionService
 from app.services.tts import TTSService
 from app.utils.encrypt import Encrypt
+from fastapi import HTTPException, status
+from fastapi.datastructures import UploadFile
 
 
 @dataclass

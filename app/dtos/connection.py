@@ -1,8 +1,7 @@
 """DTOs for connection endpoints."""
 
-from pydantic import BaseModel, Field
-
 from app.models.connection import EngineEnum
+from pydantic import BaseModel, Field
 
 
 class ConnectionData(BaseModel):

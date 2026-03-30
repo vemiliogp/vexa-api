@@ -1,7 +1,5 @@
 """Authentication routes module."""
 
-from fastapi import APIRouter, Request
-
 from app.controllers.auth import AuthController
 from app.dtos.auth import (
     LoginRequest,
@@ -11,6 +9,7 @@ from app.dtos.auth import (
     RegisterResponse,
 )
 from app.services.auth import AuthService
+from fastapi import APIRouter, Request
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 auth_controller = AuthController(AuthService())

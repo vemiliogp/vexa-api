@@ -1,12 +1,11 @@
 """Router registration."""
 
-from fastapi import FastAPI
-
 from app.routes.auth import router as auth_router
 from app.routes.connection import router as connection_router
 from app.routes.conversation import router as conversation_router
 from app.routes.health import router as health_router
 from app.routes.insight import router as insight_router
+from fastapi import FastAPI
 
 
 def register_routes(app: FastAPI) -> None:

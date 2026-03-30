@@ -2,8 +2,6 @@
 
 from dataclasses import dataclass
 
-from fastapi import File
-
 from app.dtos.conversation import (
     CreateConversationRequest,
     CreateConversationResponse,
@@ -16,6 +14,7 @@ from app.dtos.message import (
     SendMessageResponse,
 )
 from app.services.conversation import ConversationService
+from fastapi import File
 
 
 @dataclass

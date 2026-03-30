@@ -4,12 +4,11 @@ from dataclasses import dataclass, field
 from json import dumps, loads
 from logging import error, info
 
-from litellm import completion
-
 from app.agent.tools import tools
 from app.agent.tools.describe_table import describe_table
 from app.agent.tools.run_query import run_query
 from app.agent.tools.save_insight import save_insight
+from litellm import completion
 
 mapping = {
     "deepseek/r1": "deepseek/deepseek-reasoner",

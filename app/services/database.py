@@ -4,9 +4,8 @@ from dataclasses import dataclass
 from logging import error, info
 from typing import List, Optional
 
-from psycopg import connect
-
 from app.utils.connection_url import normalize_connection_url
+from psycopg import connect
 
 
 @dataclass

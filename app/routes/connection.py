@@ -1,7 +1,5 @@
 """Connection routes module."""
 
-from fastapi import APIRouter, Depends
-
 from app.controllers.connection import ConnectionController
 from app.dtos.connection import (
     CheckConnectionRequest,
@@ -13,6 +11,7 @@ from app.dtos.connection import (
 from app.middlewares.require_active_session import require_active_session
 from app.services.connection import ConnectionService
 from app.services.database import DatabaseService
+from fastapi import APIRouter, Depends
 
 router = APIRouter(prefix="/connection", tags=["Connection"])
 

@@ -1,10 +1,9 @@
 """Health routes module."""
 
-from fastapi import APIRouter
-
 from app.controllers.health import HealthController
 from app.dtos.health import HealthResponse
 from app.services.health import HealthService
+from fastapi import APIRouter
 
 router = APIRouter(prefix="/health", tags=["Health"])
 

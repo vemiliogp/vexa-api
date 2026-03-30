@@ -5,13 +5,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import mlflow
-from fastapi import FastAPI
-
 from app.config.database import setup_database
 from app.config.lifespan import lifespan
 from app.config.middlewares import setup_middlewares
 from app.exceptions import register_exception_handlers
 from app.routes import register_routes
+from fastapi import FastAPI
 
 mlflow.set_experiment("Vexa")
 mlflow.litellm.autolog()

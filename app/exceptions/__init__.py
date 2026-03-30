@@ -1,11 +1,10 @@
 """Exception handlers registration."""
 
-from fastapi import FastAPI, HTTPException
-from fastapi.exceptions import RequestValidationError
-
 from app.exceptions.http_exception_handler import http_exception_handler
 from app.exceptions.unhandled_error_handler import unhandled_error_handler
 from app.exceptions.validation_error_handler import validation_error_handler
+from fastapi import FastAPI, HTTPException
+from fastapi.exceptions import RequestValidationError
 
 
 def register_exception_handlers(app: FastAPI) -> None:

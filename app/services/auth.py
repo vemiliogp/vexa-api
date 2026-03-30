@@ -2,8 +2,6 @@
 
 from dataclasses import dataclass
 
-from fastapi import HTTPException, status
-
 from app.dtos.auth import (
     LoginRequest,
     LoginResponse,
@@ -14,6 +12,7 @@ from app.dtos.auth import (
 )
 from app.models.user import User
 from app.utils.password import Password
+from fastapi import HTTPException, status
 
 
 @dataclass

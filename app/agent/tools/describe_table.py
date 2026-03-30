@@ -2,9 +2,8 @@
 
 from logging import error
 
-from psycopg import connect
-
 from app.utils.connection_url import normalize_connection_url
+from psycopg import connect
 
 
 def describe_table(connection_url: str, table_name: str) -> list:

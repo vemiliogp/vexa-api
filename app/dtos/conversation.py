@@ -1,8 +1,7 @@
 """DTOs for conversation endpoints."""
 
-from pydantic import BaseModel, Field
-
 from app.models.conversation import ModelEnum
+from pydantic import BaseModel, Field
 
 
 class ConversationData(BaseModel):

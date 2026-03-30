@@ -2,10 +2,9 @@
 
 from enum import Enum
 
+from app.models.user import User
 from tortoise import fields
 from tortoise.models import Model
-
-from app.models.user import User
 
 
 class EngineEnum(str, Enum):

@@ -1,7 +1,5 @@
 """Insight routes module."""
 
-from fastapi import APIRouter, Depends
-
 from app.controllers.insight import InsightController
 from app.dtos.insight import (
     CreateInsightsRequest,
@@ -10,6 +8,7 @@ from app.dtos.insight import (
 )
 from app.middlewares.require_active_session import require_active_session
 from app.services.insight import InsightService
+from fastapi import APIRouter, Depends
 
 router = APIRouter(prefix="/insight", tags=["Insight"])
 

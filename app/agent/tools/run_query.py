@@ -2,9 +2,8 @@
 
 from logging import error
 
-from psycopg import connect
-
 from app.utils.connection_url import normalize_connection_url
+from psycopg import connect
 
 
 def run_query(connection_url: str, query: str) -> list:

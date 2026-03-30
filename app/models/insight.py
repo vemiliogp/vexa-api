@@ -1,10 +1,9 @@
 """Insight model definition."""
 
-from tortoise import fields
-from tortoise.models import Model
-
 from app.models.connection import Connection
 from app.models.user import User
+from tortoise import fields
+from tortoise.models import Model
 
 
 class Insight(Model):
