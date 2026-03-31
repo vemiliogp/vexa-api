@@ -93,7 +93,7 @@ class InsightService:
             )
 
             agent = Agent(
-                model="deepseek/r1",
+                model="openai/gpt-oss",
                 connection_url=connection_url,
                 system_prompt=system_prompt,
                 user_id=int(user_id),

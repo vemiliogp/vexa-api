@@ -22,12 +22,14 @@ async def generate_insights():
         await asyncio.sleep(3600 * 24)
         try:
             connections = await Connection.all().select_related("user")
-            logger.info(f"Generating insights for {len(connections)} connections")
+            logger.info(
+                f"Generating insights for {len(connections)} connections")
 
             for connection in connections:
                 try:
                     connection_url = Encrypt.decrypt(connection.encrypted_url)
-                    tables = DatabaseService.get_tables_with_columns(connection_url)
+                    tables = DatabaseService.get_tables_with_columns(
+                        connection_url)
 
                     if not tables:
                         logger.info(
@@ -55,7 +57,7 @@ async def generate_insights():
                     )
 
                     agent = Agent(
-                        model="deepseek/r1",
+                        model="openai/gpt-oss",
                         connection_url=connection_url,
                         system_prompt=system_prompt,
                         user_id=connection.user_id,

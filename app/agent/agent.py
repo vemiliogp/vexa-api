@@ -13,7 +13,7 @@ from litellm import completion
 mapping = {
     "deepseek/r1": "deepseek/deepseek-reasoner",
     "openai/gpt-5": "openai/gpt-5",
-    "openai/gpt-oss": "ollama/gpt-oss",
+    "openai/gpt-oss": "ollama_chat/gpt-oss",
 }
 
 
@@ -37,7 +37,12 @@ class Agent:
 
         while True:
             model = mapping[self.model]
-            response = completion(model=model, messages=messages, tools=tools)
+            response = completion(
+                model=model,
+                messages=messages,
+                tools=tools,
+                api_base="http://localhost:11434" if "ollama" in model else None,
+            )
 
             message = response.choices[0].message
             tool_calls = message.tool_calls or []

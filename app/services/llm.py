@@ -7,7 +7,7 @@ from litellm import completion
 mapping = {
     "deepseek/r1": "deepseek/deepseek-chat",
     "openai/gpt-5": "openai/gpt-5",
-    "openai/gpt-oss": "ollama/gpt-oss",
+    "openai/gpt-oss": "ollama_chat/gpt-oss:latest",
 }
 
 
@@ -20,9 +20,11 @@ class LLMService:
         """Generate a completion from the LLM."""
 
         try:
+            model = mapping.get(model_key)
             response = completion(
-                model=mapping.get(model_key),
+                model=model,
                 messages=[{"role": "user", "content": message}],
+                api_base="http://localhost:11434" if "ollama" in model else None,
             )
             message = response.choices[0].message
 
