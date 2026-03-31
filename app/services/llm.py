@@ -8,6 +8,7 @@ mapping = {
     "deepseek/r1": "deepseek/deepseek-chat",
     "openai/gpt-5": "openai/gpt-5",
     "openai/gpt-oss": "ollama_chat/gpt-oss:latest",
+    "ollama/deepseek-r1:14b": "ollama_chat/deepseek-r1:14b",
 }
 
 

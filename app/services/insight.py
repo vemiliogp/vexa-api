@@ -93,7 +93,7 @@ class InsightService:
             )
 
             agent = Agent(
-                model="openai/gpt-oss",
+                model=payload.model,
                 connection_url=connection_url,
                 system_prompt=system_prompt,
                 user_id=int(user_id),

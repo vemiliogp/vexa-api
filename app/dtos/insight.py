@@ -31,6 +31,7 @@ class CreateInsightsRequest(BaseModel):
     count: int = Field(default=1, ge=1, le=5)
     connection_id: int | None = Field(default=None)
     delivery_method: DeliveryMethod = Field(default=DeliveryMethod.IN_APP)
+    model: str = Field(default="openai/gpt-oss")
 
 
 class CreateInsightsResponse(BaseModel):

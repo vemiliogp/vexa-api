@@ -14,6 +14,7 @@ class ModelEnum(str, Enum):
     DEEPSEEK_R1 = "deepseek/r1"
     OPENAI_GPT_5 = "openai/gpt-5"
     OPENAI_GPT_OSS = "openai/gpt-oss"
+    OLLAMA_DEEPSEEK_R1_14B = "ollama/deepseek-r1:14b"
 
 
 class Conversation(Model):
